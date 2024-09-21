@@ -12,7 +12,7 @@ const Calculator = () => {
     <div className="mb-5">
       <Header setSignup={setSignup} setLogin={setLogin} />
       <div className="flex flex-col items-center">
-        <div className="flex flex-col items-start justify-center bg-[#00ADEF] px-5 py-2 md:px-[100px] md:py-[50px] w-full">
+        <div className="flex flex-col items-start justify-center bg-[#00ADEF] px-5 py-2 px-[100px] py-[50px] w-full">
           <span className="text-[#fff] font-medium">
             Personal loan calculator
           </span>
@@ -32,12 +32,12 @@ const Calculator = () => {
             loan calculator.
           </span>
         </div>
-        <div className="flex justify-center  border-[1px]   md:min-h-[500px] my-5">
-          <div className="flex flex-col space-y-5 border-r-[1px] pr-5 py-7 px-5">
+        <div className="flex flex-col md:flex-row w-[90%] md:w-fit justify-center  border-[1px] border-[#000]  mx-10 min-h-[500px] my-5">
+          <div className="flex flex-col space-y-5 md:border-r-[1px] border-[#000] pr-5 py-7 px-5">
             <div>
               <div className="flex flex-col ">
                 <span className="mb-2">Loan amount</span>
-                <div className="flex flex-col justify-center items-end relative border-[1px]   rounded-[5px]  my-2">
+                <div className="flex flex-col justify-center items-end relative border-[1px] border-[#000]   rounded-[5px]  my-2">
                   <input
                     type="text"
                     className="h-[45px] w-[90%] outline-none "
@@ -56,11 +56,11 @@ const Calculator = () => {
             </div>
             <div>
               <span className="">Loan term</span>
-              <div className="flex border-[1px] rounded-[5px] h-[45px] mt-4">
-                <div className="flex items-center justify-center w-[33.33%] border-r-[1px] cursor-pointer">
+              <div className="flex border-[1px] border-[#000] rounded-[5px] h-[45px] mt-4">
+                <div className="flex items-center justify-center w-[33.33%] border-r-[1px] border-[#000] cursor-pointer">
                   <span className="text-[#9C9C9C] font-medium ">3 years</span>
                 </div>
-                <div className="flex items-center justify-center w-[33.33%] border-r-[1px] cursor-pointer">
+                <div className="flex items-center justify-center w-[33.33%] border-r-[1px] border-[#000] cursor-pointer">
                   <span className=" text-[#9C9C9C] font-medium ">5 years</span>
                 </div>
                 <div className="flex items-center justify-center w-[33.33%] cursor-pointer ">
@@ -71,13 +71,13 @@ const Calculator = () => {
             <div>
               <div className="mb-1">
                 <span className="">Credit history</span>
-                <div className="flex border-[1px] rounded-[5px] h-[45px] mt-4">
-                  <div className="flex items-center justify-center w-[33.33%] border-r-[1px] cursor-pointer">
+                <div className="flex border-[1px] border-[#000] rounded-[5px] h-[45px] mt-4">
+                  <div className="flex items-center justify-center w-[33.33%] border-r-[1px] border-[#000] cursor-pointer">
                     <span className="text-[#9C9C9C] font-medium ">
                       Excellent
                     </span>
                   </div>
-                  <div className="flex items-center justify-center w-[33.33%] border-r-[1px] cursor-pointer">
+                  <div className="flex items-center justify-center w-[33.33%] border-r-[1px] border-[#000] cursor-pointer">
                     <span className=" text-[#9C9C9C] font-medium ">Good</span>
                   </div>
                   <div className="flex items-center justify-center w-[33.33%] cursor-pointer ">
@@ -96,7 +96,7 @@ const Calculator = () => {
             </div>
           </div>
           <div className="flex flex-col items-center  pt-7 bg-[#FAFAFC]">
-            <div className="flex flex-col items-center h-[50%] px-5 border-b-[1px] ">
+            <div className="flex flex-col items-center md:h-[50%] py-10 h-[250px]  md:py-0  md:px-5 md:border-b-[1px] border-[#000] ">
               <div>
                 <span className="font-bold text-[17px]">
                   Your repayment estimate
@@ -104,11 +104,11 @@ const Calculator = () => {
               </div>
 
               <div className="flex flex-col items-center">
-                <div className="flex border-[1px] rounded-[5px] h-[35px] mt-4">
-                  <div className="flex items-center justify-center w-[33.33%] border-r-[1px] cursor-pointer p-3">
+                <div className="flex border-[1px] border-[#000] rounded-[5px] h-[35px] mt-4">
+                  <div className="flex items-center justify-center w-[33.33%] border-r-[1px] border-[#000] cursor-pointer p-3">
                     <span className="text-[#9C9C9C] font-medium ">Weekly</span>
                   </div>
-                  <div className="flex items-center justify-center w-[33.33%] border-r-[1px] cursor-pointer p-3 px-4">
+                  <div className="flex items-center justify-center w-[33.33%] border-r-[1px] border-[#000] cursor-pointer p-3 px-4">
                     <span className=" text-[#9C9C9C] font-medium ">
                       Fortnightly
                     </span>
@@ -127,7 +127,7 @@ const Calculator = () => {
                 </span>
               </div>
             </div>
-            <div className="flex items-center justify-center h-[50%] w-full bg-[#fff]">
+            <div className="flex items-center justify-center md:h-[50%] py-10 h-[250px]  md:py-0 w-full bg-[#fff]">
               <div
                 onClick={() => setSignup(true)}
                 className="flex  bg-[#00ADEF] rounded-[100px] px-[50px] py-[15px] cursor-pointer"

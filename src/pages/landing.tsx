@@ -29,9 +29,9 @@ const Landing = () => {
               >
                 <span className="text-[#fff] text-[19px]">Apply now</span>
               </div>
-              <div className="bg-[#fff] rounded-[100px] border-[1px] border-[#00ADEF] px-[50px] py-[15px] cursor-pointer">
+              {/* <div className="bg-[#fff] rounded-[100px] border-[1px] border-[#00ADEF] px-[50px] py-[15px] cursor-pointer">
                 <span className="text-[#00ADEF] text-[19px]">Get a qoute</span>
-              </div>
+              </div> */}
             </div>
           </div>
 

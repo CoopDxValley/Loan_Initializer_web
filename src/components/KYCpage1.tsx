@@ -8,7 +8,7 @@ const KYCpage1 = () => {
   return (
     <div className="flex flex-col items-center">
       <Header2 setSignup={setSignup} setLogin={setLogin} />
-      <div className=" w-[70%] p-10">
+      <div className=" w-[90%] md:w-[70%] p-10">
         <div className="flex flex-row items-center space-x-2">
           <MdArrowBackIos />
           <span className="font-bold">Complete KYC to Proceed</span>
@@ -28,7 +28,7 @@ const KYCpage1 = () => {
             Enter your details as they appear on your official documentations
           </span>
         </div>
-        <div className=" grid grid-cols-2 gap-4 gap-x-6">
+        <div className=" grid md:grid-cols-2 gap-4 gap-x-6">
           <div className="flex flex-col">
             <span className="text-[#6D7E8C] font-medium text-[15px] mb-2">
               First name
@@ -67,10 +67,10 @@ const KYCpage1 = () => {
           </div>
         </div>
         <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-3 mt-3">
-          <div className="bg-[#0278ff] rounded-[5px] px-[20px] py-[5px] cursor-pointer">
+          <div className="flex justify-center bg-[#0278ff] rounded-[5px] px-[20px] py-[5px] cursor-pointer">
             <span className="text-[#fff] text-[17px]">Next</span>
           </div>
-          <div className="bg-[#fff] rounded-[5px] border-[1px]  px-[20px] py-[5px] cursor-pointer">
+          <div className="flex justify-center bg-[#fff] rounded-[5px] border-[1px]  px-[20px] py-[5px] cursor-pointer">
             <span className="text-[#00ADEF] text-[19px]">Cancel</span>
           </div>
         </div>

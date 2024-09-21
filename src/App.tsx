@@ -1,20 +1,16 @@
 import "./App.css";
-import Calculator from "./components/Calculator";
-import Header from "./components/Header";
-import KYCpage1 from "./components/KYCpage1";
-import KYCpage2 from "./components/KYCpage2";
-import Login from "./components/Login";
-import Signup from "./components/Signup";
+import dotenv from "dotenv";
 import Landing from "./pages/landing";
 
 function App() {
+  dotenv.config();
   return (
     <>
-      {/* <Landing /> */}
+      <Landing />
       {/* <Signup /> */}
       {/* <Calculator /> */}
       {/* <KYCpage1 /> */}
-      <KYCpage2 />
+      {/* <KYCpage2 /> */}
     </>
   );
 }
