@@ -2,7 +2,7 @@ import axios from "axios";
 import { setLoading, setStatusSucess, setUsername } from "../Slices";
 import { updateAuthorizationHeader } from "../../lib/axios_interceptors";
 
-const BASE_URL = process.env.BASE_URL;
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 export const login = ({
   username,

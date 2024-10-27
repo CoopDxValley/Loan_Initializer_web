@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Multiply from "../assets/Multiply.svg?react";
+import { useNavigate } from "react-router-dom";
 
 const Signup = ({ setSignup, setLogin }: any) => {
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const navigate = useNavigate();
   // Formik configuration
   const formik = useFormik({
     initialValues: {
@@ -189,10 +191,7 @@ const Signup = ({ setSignup, setLogin }: any) => {
           Already have an account?
         </span>
         <span
-          onClick={() => {
-            setLogin(true);
-            setSignup(false);
-          }}
+          onClick={() => navigate("/login")}
           className="text-[#00358D] font-medium cursor-pointer"
         >
           Login

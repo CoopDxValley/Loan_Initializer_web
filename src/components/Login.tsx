@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useFormik } from "formik";
-import * as Yup from "yup";
 import Multiply from "../assets/Multiply.svg?react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../AuthProvider";
 
 const Login = ({ setSignup, setLogin }: any) => {
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
   // Formik configuration
   const formik = useFormik({
@@ -12,16 +15,18 @@ const Login = ({ setSignup, setLogin }: any) => {
       email: "",
       password: "",
     },
-    validationSchema: Yup.object({
-      email: Yup.string()
-        .email("Invalid email address")
-        .required("Email is required"),
-      password: Yup.string()
-        .min(6, "Password must be at least 6 characters")
-        .required("Password is required"),
-    }),
+    // validationSchema: Yup.object({
+    //   email: Yup.string()
+    //     .email("Invalid email address")
+    //     .required("Email is required"),
+    //   password: Yup.string()
+    //     .min(6, "Password must be at least 6 characters")
+    //     .required("Password is required"),
+    // }),
     onSubmit: (values) => {
       setFormSubmitted(true);
+      login();
+      navigate("/dashboard");
       console.log("Form values:", values);
       // Handle login logic here
     },

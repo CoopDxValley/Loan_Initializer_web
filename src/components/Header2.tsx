@@ -1,7 +1,8 @@
-import React from "react";
+import { useNavigate } from "react-router-dom";
 import Tasks from "../assets/Tasks.svg?react";
 
-const Header2 = ({ setSignup, setLogin }: any) => {
+const Header2 = ({ setLogin }: any) => {
+  const navigate = useNavigate();
   return (
     <div className="sticky top-0 w-full">
       <div className="flex justify-between bg-[#fff] p-5 px-4 border-[1px] ">
@@ -12,15 +13,28 @@ const Header2 = ({ setSignup, setLogin }: any) => {
               CoopLoan
             </span>
           </div>
-          <div className="  py-1 rounded-[50px] self-center ml-[50px] mt-[6px]">
-            <span className="text-[#1C5BC2] text-[16px] font-medium">
-              Dashboard
-            </span>
-          </div>
         </div>
-        <div className="flex items-center space-x-6">
+        <div className="flex flex-row items-center space-x-6">
           <span
-            onClick={() => setLogin(true)}
+            // onClick={() => navigate("/")}
+            className="text-[#000] font-medium cursor-pointer"
+          >
+            Applications
+          </span>
+          <span
+            onClick={() => navigate("/kyc1")}
+            className="text-[#000] font-medium cursor-pointer"
+          >
+            Kyc
+          </span>
+          <span
+            onClick={() => navigate("/packages")}
+            className="text-[#000] font-medium cursor-pointer"
+          >
+            Packages
+          </span>
+          <span
+            onClick={() => navigate("/signup")}
             className="text-[#D33D3B] font-medium cursor-pointer"
           >
             Sign out

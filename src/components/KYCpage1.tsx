@@ -1,16 +1,18 @@
 import React, { useState } from "react";
 import { MdArrowBackIos } from "react-icons/md";
-import Header2 from "./Header2";
+import { useNavigate } from "react-router-dom";
 
 const KYCpage1 = () => {
-  const [signup, setSignup] = useState(false);
-  const [login, setLogin] = useState(false);
+  const navigate = useNavigate();
+
   return (
     <div className="flex flex-col items-center">
-      <Header2 setSignup={setSignup} setLogin={setLogin} />
       <div className=" w-[90%] md:w-[70%] p-10">
         <div className="flex flex-row items-center space-x-2">
-          <MdArrowBackIos />
+          <MdArrowBackIos
+            onClick={() => navigate("/packages")}
+            className="cursor-pointer"
+          />
           <span className="font-bold">Complete KYC to Proceed</span>
         </div>
         <div className="mt-5">
@@ -67,7 +69,10 @@ const KYCpage1 = () => {
           </div>
         </div>
         <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-3 mt-3">
-          <div className="flex justify-center bg-[#0278ff] rounded-[5px] px-[20px] py-[5px] cursor-pointer">
+          <div
+            onClick={() => navigate("/kyc2")}
+            className="flex justify-center bg-[#0278ff] rounded-[5px] px-[20px] py-[5px] cursor-pointer"
+          >
             <span className="text-[#fff] text-[17px]">Next</span>
           </div>
           <div className="flex justify-center bg-[#fff] rounded-[5px] border-[1px]  px-[20px] py-[5px] cursor-pointer">
