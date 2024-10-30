@@ -38,7 +38,7 @@ const Login = ({ setSignup, setLogin }: any) => {
         onClick={() => setLogin(false)}
         className="absolute top-3 right-3 cursor-pointer"
       >
-        <Multiply />
+        <Multiply onClick={() => navigate("/")} />
       </div>
       <div className="flex flex-col items-center my-8 mt-2">
         <span className="text-[25px] stroke-[#ff0000] font-medium">
@@ -114,10 +114,7 @@ const Login = ({ setSignup, setLogin }: any) => {
           Don't have an account?
         </span>
         <span
-          onClick={() => {
-            setSignup(true);
-            setLogin(false);
-          }}
+          onClick={() => navigate("/signup")}
           className="text-[#00358D] text-[15px] font-medium cursor-pointer"
         >
           Sign up for Free

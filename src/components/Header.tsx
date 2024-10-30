@@ -1,7 +1,11 @@
 import React from "react";
 import Tasks from "../assets/Tasks.svg?react";
+import { useAuth } from "../../AuthProvider";
+import { useNavigate } from "react-router-dom";
 
 const Header = ({ setSignup, setLogin }: any) => {
+  const { isLoggedIn, logout } = useAuth();
+  const navigate = useNavigate();
   return (
     <div className="sticky top-0">
       <div className="flex justify-between bg-[#fff] p-5 px-4 border-[1px] ">
@@ -14,17 +18,28 @@ const Header = ({ setSignup, setLogin }: any) => {
         </div>
         <div className="flex items-center space-x-6">
           <div
-            onClick={() => setSignup(true)}
+            onClick={() => navigate("/dashboard")}
             className="border-[1px] border-[#00ADEF]  px-2 py-1 rounded-[50px] self-center cursor-pointer"
           >
             <span className="text-[#00ADEF]  font-medium">Apply now</span>
           </div>
-          <span
-            onClick={() => setLogin(true)}
-            className="text-[#00ADEF] font-medium cursor-pointer"
-          >
-            Sign in
-          </span>
+          {!isLoggedIn ? (
+            <span
+              onClick={() => setLogin(true)}
+              className="text-[#00ADEF] font-medium cursor-pointer"
+            >
+              Sign in
+            </span>
+          ) : (
+            <span
+              onClick={() => {
+                logout();
+              }}
+              className="text-[#D33D3B] font-medium cursor-pointer"
+            >
+              Sign out
+            </span>
+          )}
         </div>
       </div>
     </div>

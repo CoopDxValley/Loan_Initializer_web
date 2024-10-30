@@ -1,5 +1,5 @@
 import axios from "axios";
-import { setLoading, setStatusSucess, setUsername } from "../Slices";
+import { setKyc, setLoading, setStatusSucess, setUsername } from "../Slices";
 import { updateAuthorizationHeader } from "../../lib/axios_interceptors";
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
@@ -46,6 +46,7 @@ export const login = ({
         )
         .then(async (res: any) => {
           updateAuthorizationHeader(res.token).then(() => {});
+          getUserKyc(username);
         })
         .catch((err) => {
           console.log(err);
@@ -73,6 +74,33 @@ export const login = ({
             }
           }
         });
+    }
+  };
+};
+
+export const getUserKyc = (username: any) => {
+  return async (dispatch: any) => {
+    try {
+      // dispatch(setLoading(true));
+      dispatch(setStatusSucess(false));
+
+      axios
+        .get(``, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((res: any) => {
+          dispatch(setKyc(res.data));
+          dispatch(setLoading(false));
+          dispatch(setStatusSucess(true));
+        })
+        .catch((err) => {
+          dispatch(setLoading(false));
+          console.log(err);
+        });
+    } catch (e) {
+      dispatch(setLoading(false));
     }
   };
 };

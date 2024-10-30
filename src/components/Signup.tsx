@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import Multiply from "../assets/Multiply.svg?react";
 import { useNavigate } from "react-router-dom";
 
-const Signup = ({ setSignup, setLogin }: any) => {
+const Signup = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const navigate = useNavigate();
   // Formik configuration
@@ -41,7 +41,7 @@ const Signup = ({ setSignup, setLogin }: any) => {
   return (
     <div className="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] bg-[#fff] z-10 flex flex-col min-w-[80%] md:min-w-[600px] border-[1px] border-[#6D7E8C] m-5 p-5 px-[50px]">
       <div
-        onClick={() => setSignup(false)}
+        onClick={() => navigate("/")}
         className="absolute top-3 right-3 cursor-pointer"
       >
         <Multiply />
@@ -157,7 +157,7 @@ const Signup = ({ setSignup, setLogin }: any) => {
 
         <button
           type="button"
-          onClick={() => setSignup(false)}
+          onClick={() => navigate("/")}
           className="flex justify-center border-[1px] border-[#6D7E8C] p-2 rounded-[5px] mt-4 cursor-pointer"
         >
           <span className="font-medium">Cancel</span>

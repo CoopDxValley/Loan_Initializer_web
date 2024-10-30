@@ -4,6 +4,7 @@ const initialState = {
   username: "",
   useId: null,
   password: null,
+  kyc: [],
 };
 
 const userSlice = createSlice({
@@ -16,9 +17,12 @@ const userSlice = createSlice({
     setPassword: (state, { payload }) => {
       state.password = payload;
     },
+    setKyc: (state, { payload }) => {
+      state.kyc = payload;
+    },
   },
 });
 
 const { reducer, actions } = userSlice;
-export const { setUsername, setPassword } = actions;
+export const { setUsername, setPassword, setKyc } = actions;
 export default reducer;

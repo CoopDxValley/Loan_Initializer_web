@@ -10,6 +10,9 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { AuthProvider, useAuth } from "../AuthProvider";
 import Layout from "./Layout";
 import LoanPackages from "./pages/loanPackages";
+import Souq from "./pages/souqpass";
+import Contract from "./components/Contract";
+import MyLoans from "./pages/MyLoans";
 
 function App() {
   return (
@@ -61,6 +64,36 @@ function App() {
             }
           />
           <Route path="/" element={<Landing />} />
+          <Route
+            path="/contract"
+            element={
+              <PrivateRoute>
+                <Layout>
+                  <Contract />
+                </Layout>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/Souq"
+            element={
+              <PrivateRoute>
+                <Layout>
+                  <Souq />
+                </Layout>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/myloans"
+            element={
+              <PrivateRoute>
+                <Layout>
+                  <MyLoans />
+                </Layout>
+              </PrivateRoute>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

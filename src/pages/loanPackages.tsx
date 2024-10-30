@@ -1,20 +1,30 @@
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export default function LoanPackages() {
   const navigate = useNavigate();
+  const { kyc } = useSelector((state: any) => state.user);
 
-  const handleApplication = () => {
-    navigate("/kyc1");
+  const handleApplication = (title: string) => {
+    if (!!kyc) {
+      if (title === "Souqpass Financing Loan") {
+        navigate("/Souq");
+      }
+    } else {
+      navigate("/kyc1");
+    }
   };
 
-  const LoanPackage = () => {
+  console.log(!!kyc);
+
+  const LoanPackage = ({ title, subTitle, ...props }: any) => {
     return (
       <div className="bg-white w-full flex flex-col gap-4 px-4 py-6 rounded-lg">
         <div className="w-full flex gap-2">
           <img src="/assets/myGuarantor.png" className="w-20" />
           <div className="flex-1 flex flex-col">
-            <span className="font-bold">Agriculture Financing Loan</span>
-            <span className="text-[#73738C]">Agri Loan</span>
+            <span className="font-bold">{title}</span>
+            <span className="text-[#73738C]">{subTitle}</span>
           </div>
         </div>
         <div className="w-full flex flex-col sm:flex-row gap-4 px-9 text-xs">
@@ -37,7 +47,7 @@ export default function LoanPackages() {
             <span className="w-14 font-bold text-xs">{"$4,406.88"}</span>
           </div>
           <button
-            onClick={() => handleApplication()}
+            onClick={() => handleApplication(title)}
             className="w-full bg-[#1C5BC2] text-white py-2 text-center font-bold rounded-full"
           >
             Apply
@@ -122,10 +132,15 @@ export default function LoanPackages() {
         </div>
       </div>
       <div className="px-4 sm:px-16 flex flex-col gap-6 pb-6">
-        <LoanPackage />
-        <LoanPackage />
-        <LoanPackage />
-        <LoanPackage />
+        <LoanPackage title={"Souqpass Financing Loan"} subTitle={"RFB Loan"} />
+        <LoanPackage
+          title={"Agriculture financing Loan"}
+          subTitle={"Agri Loan"}
+        />
+        <LoanPackage
+          title={"Agriculture financing Loan"}
+          subTitle={"Agri Loan"}
+        />
       </div>
     </div>
   );
