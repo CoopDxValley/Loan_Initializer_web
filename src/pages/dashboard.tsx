@@ -84,14 +84,17 @@ export default function Dashboard() {
           </span>
           <BusinessSelection />
         </div>
-        <div
+        {/* <div
           onClick={() => handlePackages()}
           className="w-full flex justify-center"
+        > */}
+        <button
+          onClick={() => handlePackages()}
+          className="bg-[#1C5BC2] rounded-full text-white py-1 px-12 font-bold text-xl"
         >
-          <button className="bg-[#1C5BC2] rounded-full text-white py-1 px-12 font-bold text-xl">
-            Proceed
-          </button>
-        </div>
+          Proceed
+        </button>
+        {/* </div> */}
       </div>
     </div>
   );

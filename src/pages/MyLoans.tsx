@@ -26,6 +26,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useNavigate } from "react-router-dom";
 
 const loanRequests = [
   {
@@ -73,6 +74,7 @@ export default function MyLoans() {
       loan.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
       loan.status.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  const navigate = useNavigate();
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -164,7 +166,12 @@ export default function MyLoans() {
                       <TableCell>{loan.status}</TableCell>
                       <TableCell>{loan.date}</TableCell>
                       <TableCell>
-                        <Button variant="ghost">View Details</Button>
+                        <Button
+                          onClick={() => navigate("/loan_details")}
+                          variant="ghost"
+                        >
+                          View Details
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}

@@ -13,6 +13,12 @@ import LoanPackages from "./pages/loanPackages";
 import Souq from "./pages/souqpass";
 import Contract from "./components/Contract";
 import MyLoans from "./pages/MyLoans";
+import Packages from "./pages/Packages";
+import KYC1 from "./components/KYC1";
+import KYC2 from "./components/KYC2";
+import Apply from "./pages/Apply";
+import Land from "./pages/Land";
+import LoanDetails from "./pages/loanDetail";
 
 function App() {
   return (
@@ -28,7 +34,8 @@ function App() {
             element={
               <PrivateRoute>
                 <Layout>
-                  <Dashboard />
+                  {/* <Dashboard /> */}
+                  <Apply />
                 </Layout>
               </PrivateRoute>
             }
@@ -38,7 +45,8 @@ function App() {
             element={
               <PrivateRoute>
                 <Layout>
-                  <KYCpage1 />
+                  {/* <KYCpage1 /> */}
+                  <KYC1 />
                 </Layout>
               </PrivateRoute>
             }
@@ -48,7 +56,8 @@ function App() {
             element={
               <PrivateRoute>
                 <Layout>
-                  <KYCpage2 />
+                  {/* <KYCpage2 /> */}
+                  <KYC2 />
                 </Layout>
               </PrivateRoute>
             }
@@ -58,12 +67,19 @@ function App() {
             element={
               <PrivateRoute>
                 <Layout>
-                  <LoanPackages />
+                  {/* <LoanPackages /> */}
+                  <Packages />
                 </Layout>
               </PrivateRoute>
             }
           />
-          <Route path="/" element={<Landing />} />
+          <Route
+            path="/"
+            element={
+              // <Landing />
+              <Land />
+            }
+          />
           <Route
             path="/contract"
             element={
@@ -90,6 +106,17 @@ function App() {
               <PrivateRoute>
                 <Layout>
                   <MyLoans />
+                </Layout>
+              </PrivateRoute>
+            }
+          />
+          <Route path="/calculator" element={<Calculator />} />
+          <Route
+            path="/loan_details"
+            element={
+              <PrivateRoute>
+                <Layout>
+                  <LoanDetails />
                 </Layout>
               </PrivateRoute>
             }

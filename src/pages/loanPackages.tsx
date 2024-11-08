@@ -48,7 +48,7 @@ export default function LoanPackages() {
           </div>
           <button
             onClick={() => handleApplication(title)}
-            className="w-full bg-[#1C5BC2] text-white py-2 text-center font-bold rounded-full"
+            className="w-full bg-[#15151c] text-white py-2 text-center font-bold rounded-full"
           >
             Apply
           </button>
@@ -73,14 +73,14 @@ export default function LoanPackages() {
           <div className="flex flex-col sm:flex-row sm:justify-between border-[1px] border-black rounded-md px-6 py-6 gap-4">
             <span
               className="sm:hidden font-bold text-black text-base"
-              style={{ WebkitTextStroke: "0.6px #1C5BC2" }}
+              style={{ WebkitTextStroke: "0.6px #15151c" }}
             >
               Loan details
             </span>
             <div>
               <span
                 className="font-bold text-black text-xl sm:font-medium sm:text-sm"
-                style={{ WebkitTextStroke: "0.6px #1C5BC2" }}
+                style={{ WebkitTextStroke: "0.6px #15151c" }}
               >
                 Loan amount
               </span>
@@ -88,35 +88,35 @@ export default function LoanPackages() {
                 <div className="absolute h-full flex pl-2 items-center">
                   <span
                     className="font-bold text-black text-base"
-                    style={{ WebkitTextStroke: "0.6px #1C5BC2" }}
+                    style={{ WebkitTextStroke: "0.6px #15151c" }}
                   >
                     $
                   </span>
                 </div>
                 <input
                   type="text"
-                  className="w-full font-bold text-black text-xl pl-8 pr-4 py-3 rounded-md border-[1px] border-[#1C5BC2] outline-none"
-                  style={{ WebkitTextStroke: "0.6px #1C5BC2" }}
+                  className="w-full font-bold text-black text-xl pl-8 pr-4 py-3 rounded-md border-[1px] border-[#15151c] outline-none"
+                  style={{ WebkitTextStroke: "0.6px #15151c" }}
                 />
               </div>
             </div>
             <div>
               <span
                 className="font-bold text-black text-xl sm:font-medium sm:text-sm"
-                style={{ WebkitTextStroke: "0.6px #1C5BC2" }}
+                style={{ WebkitTextStroke: "0.6px #15151c" }}
               >
                 Loan term
               </span>
               <div className="relative">
                 <input
                   type="text"
-                  className="w-full font-bold text-black text-xl pr-20 pl-4 py-3 rounded-md border-[1px] border-[#1C5BC2] outline-none"
-                  style={{ WebkitTextStroke: "0.6px #1C5BC2" }}
+                  className="w-full font-bold text-black text-xl pr-20 pl-4 py-3 rounded-md border-[1px] border-[#15151c] outline-none"
+                  style={{ WebkitTextStroke: "0.6px #15151c" }}
                 />
                 <div className="absolute h-full flex pr-2 items-center justify-end right-0 top-0">
                   <span
                     className="font-bold text-black text-base"
-                    style={{ WebkitTextStroke: "0.6px #1C5BC2" }}
+                    style={{ WebkitTextStroke: "0.6px #15151c" }}
                   >
                     months
                   </span>
@@ -124,7 +124,7 @@ export default function LoanPackages() {
               </div>
             </div>
             <div className="flex items-end">
-              <button className="w-full sm:w-56 bg-[#1C5BC2] text-white py-2 text-center font-bold rounded-full">
+              <button className="w-full sm:w-56 bg-[#15151c] text-white py-2 text-center font-bold rounded-full">
                 Update results
               </button>
             </div>

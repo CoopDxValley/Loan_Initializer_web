@@ -12,25 +12,25 @@ const Landing = () => {
   const [login, setLogin] = useState(false);
   return (
     <>
-      <Header setSignup={setSignup} setLogin={setLogin} />
+      <Header />
       <div className="flex flex-col items-center bg-[#fafafc]">
         <div className="flex items-center justify-center bg-[#fff] px-5 py-10 w-full">
           <div className="flex flex-col items-center md:items-start ">
-            <h3 className="font-medium uppercase text-[15px] text-[#00ADEF]">
+            <h3 className="font-medium uppercase text-[15px] text-[#15151c]">
               Personal Loans
             </h3>
-            <h1 className="text-[#00ADEF] md:max-w-[600px] font-medium text-[40px] md:text-[60px] leading-[60px] text-center md:text-start my-3">
+            <h1 className="text-[#15151c] md:max-w-[600px] font-medium text-[40px] md:text-[60px] leading-[60px] text-center md:text-start my-3">
               Personal loans to start almost anything.
             </h1>
             <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-3 mt-3">
               <div
                 onClick={() => setSignup(true)}
-                className="bg-[#00ADEF] rounded-[100px] px-[50px] py-[15px] cursor-pointer"
+                className="bg-[#15151c] rounded-[100px] px-[50px] py-[15px] cursor-pointer"
               >
                 <span className="text-[#fff] text-[19px]">Apply now</span>
               </div>
-              {/* <div className="bg-[#fff] rounded-[100px] border-[1px] border-[#00ADEF] px-[50px] py-[15px] cursor-pointer">
-                <span className="text-[#00ADEF] text-[19px]">Get a qoute</span>
+              {/* <div className="bg-[#fff] rounded-[100px] border-[1px] border-[#15151c] px-[50px] py-[15px] cursor-pointer">
+                <span className="text-[#15151c] text-[19px]">Get a qoute</span>
               </div> */}
             </div>
           </div>
@@ -80,7 +80,7 @@ const Landing = () => {
               <span className="font-bold text-[20px] text-center">
                 $2K - $70K
               </span>
-              <div className="border-[2px] w-[100px] border-[#00ADEF] my-3"></div>
+              <div className="border-[2px] w-[100px] border-[#15151c] my-3"></div>
               <span className="font-bold text-center text-[14px]">
                 Loan limits
               </span>
@@ -89,21 +89,21 @@ const Landing = () => {
               <span className="font-bold text-[20px] text-center">
                 3, 5 or 7 years
               </span>
-              <div className="border-[2px] w-[100px] border-[#00ADEF] my-3"></div>
+              <div className="border-[2px] w-[100px] border-[#15151c] my-3"></div>
               <span className="font-bold text-center text-[14px]">
                 Loan terms
               </span>
             </div>
             <div className="flex flex-col px-[55px] py-[40px] shadow-md items-center">
               <span className="font-bold text-[20px] text-center">$0</span>
-              <div className="border-[2px] w-[100px] border-[#00ADEF] my-3"></div>
+              <div className="border-[2px] w-[100px] border-[#15151c] my-3"></div>
               <span className="font-bold text-center text-[14px]">
                 Early repayment fee
               </span>
             </div>
             <div className="flex flex-col px-[55px] py-[40px] shadow-md items-center">
               <span className="font-bold text-[20px] text-center">$0</span>
-              <div className="border-[2px] w-[100px] border-[#00ADEF] my-3"></div>
+              <div className="border-[2px] w-[100px] border-[#15151c] my-3"></div>
               <span className="font-bold text-center text-[14px]">
                 Early repayment fee
               </span>
@@ -140,8 +140,8 @@ const Landing = () => {
             Tell us about your loan and provide us some details about yourself
             and your finances.
           </span>
-          <div className="border-[1px] border-[#00ADEF] p-2 px-4 rounded-[50px] self-center mt-5 cursor-pointer">
-            <span className="font-medium text-[#00ADEF] text-[17px]">
+          <div className="border-[1px] border-[#15151c] p-2 px-4 rounded-[50px] self-center mt-5 cursor-pointer">
+            <span className="font-medium text-[#15151c] text-[17px]">
               Personal loan calculator
             </span>
           </div>
@@ -165,7 +165,7 @@ const Landing = () => {
                 Got your eye on that new or used vehicle? Our auto loan can help
                 get you out on the road.
               </span>
-              <span className="text-[#00ADEF] text-[15px] text-start mt-3">
+              <span className="text-[#15151c] text-[15px] text-start mt-3">
                 Find out more
               </span>
             </div>
@@ -180,7 +180,7 @@ const Landing = () => {
                 Got your eye on that new or used vehicle? Our auto loan can help
                 get you out on the road.
               </span>
-              <span className="text-[#00ADEF] text-[15px] text-start mt-3">
+              <span className="text-[#15151c] text-[15px] text-start mt-3">
                 Find out more
               </span>
             </div>
@@ -195,7 +195,7 @@ const Landing = () => {
                 Got your eye on that new or used vehicle? Our auto loan can help
                 get you out on the road.
               </span>
-              <span className="text-[#00ADEF] text-[15px] text-start mt-3">
+              <span className="text-[#15151c] text-[15px] text-start mt-3">
                 Find out more
               </span>
             </div>
@@ -210,7 +210,7 @@ const Landing = () => {
                 Got your eye on that new or used vehicle? Our auto loan can help
                 get you out on the road.
               </span>
-              <span className="text-[#00ADEF] text-[15px] text-start mt-3">
+              <span className="text-[#15151c] text-[15px] text-start mt-3">
                 Find out more
               </span>
             </div>
@@ -225,7 +225,7 @@ const Landing = () => {
                 Got your eye on that new or used vehicle? Our auto loan can help
                 get you out on the road.
               </span>
-              <span className="text-[#00ADEF] text-[15px] text-start mt-3">
+              <span className="text-[#15151c] text-[15px] text-start mt-3">
                 Find out more
               </span>
             </div>
@@ -240,15 +240,13 @@ const Landing = () => {
                 Got your eye on that new or used vehicle? Our auto loan can help
                 get you out on the road.
               </span>
-              <span className="text-[#00ADEF] text-[15px] text-start mt-3">
+              <span className="text-[#15151c] text-[15px] text-start mt-3">
                 Find out more
               </span>
             </div>
           </div>
         </div>
       </div>
-      {signup && <Signup setSignup={setSignup} setLogin={setLogin} />}
-      {login && <Login setSignup={setSignup} setLogin={setLogin} />}
     </>
   );
 };

@@ -1,97 +1,213 @@
-import React from "react";
-import { Button } from "./ui/button";
-import { Checkbox } from "./ui/checkbox";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
+  CheckCircle2,
+  ArrowRight,
+  AlertCircle,
+  RefreshCcw,
+} from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const Contract = () => {
+export default function Component() {
+  const [showResult, setShowResult] = useState<"success" | "failure" | null>(
+    null
+  );
+  const navigate = useNavigate();
   return (
-    <div className="flex flex-col items-center px-10">
-      <h1 className="text-[17px] mt-10 mb-5">
-        Contract of Souq pass Digital lending Term Loan
-      </h1>
-      <hr className="h-[2px] bg-[#000] w-full mb-5" />
-      <div>
-        <p>
-          Now, therefore, the parties have entered these digital loan contract
-          to be processed and disbursed digitally as per this contract and terms
-          and conditions made an annex and integral part of this contract.
-        </p>
-        <p>
-          This contract is made and entered into this <b>6</b> day of{" "}
-          <b>June</b> the year <b>2024</b> between Mr/Ms <b>Motuma Gishu</b>{" "}
-          whose address is in <b>AA</b> City/Town, Contact{" "}
-          <b>motumagishu27@gmail.com</b> ID / passport No. <b>54658784564</b>
-        </p>
-        <div className="my-1">
-          <span>and</span>
-        </div>
-        <p className="my-3">
-          Cooperative Bank of Oromia S.C. whose address is Addis Ababa City,
-          Kirkos Sub-city, Africa Avenue, Flamingo Area, Get House Building Tel:
-          +251 115150229 P.O. Box: 16936.
-        </p>
-        <p className="my-3">
-          Whereas the bank is a financial institution engaged in banking
-          business and has consented to grant the borrower a term loan facility,
-        </p>
-        <p className="my-3">
-          Whereas the borrower is a business entity engaged in <b>Coop</b> and
-          has requested the bank for a term loan facility.
-        </p>
-        <b>Article 1. Loan amount and its disbursement</b>
-        <div className="my-2">
-          <p>
-            1.1. The bank has agreed to grant a digital loan to the borrower,
-            and the latter has agreed to borrow a loan amount of birr{" "}
-            <b>100000.0</b>
-          </p>
-          <p>
-            1.2. The loan shall be disbursed to the borrower account maintained
-            at the bank.
-          </p>
-        </div>
-        <b>Article 2. Interest Rate</b>
-        <p className="my-2">
-          The bank shall charge an interest rate of 7.0% per month on the daily
-          outstanding principal loan balance.
-        </p>
-        <b>Article 3. Loan Repayment</b>
-        <p className="mt-2">
-          3.1. The loan with its interest and other costs shall be totally
-          repaid in 6 months.
-        </p>
-        <p>3.2. The repayment schedule will be provided over the platform.</p>
-        <p className="mb-2">
-          3.3. In the event of default, without prejudice to any rights and
-          remedies the bank is entitled to under the law, the bank has the right
-          to set off any outstanding loan, including interest, costs, and
-          expenses, against any account of the borrower kept with any branch of
-          the bank, cheques payable to the borrower, and money transfers made to
-          the borrower through the bank. Additionally, it is understood that the
-          bank will consistently block the amount equivalent to this month's
-          repayment in the borrower’s account as a preventive measure.
-        </p>
-        <b>Article 4. Applicable Law</b>
-        <p className="mt-2">
-          This contract shall be subject to, governed by, and constructed in
-          accordance with the relevant provision of Ethiopian Law.
-        </p>
-        <div className="flex items-center space-x-2 mt-5 ">
-          <Checkbox id="terms" className="" />
-          <label
-            htmlFor="terms"
-            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+    <>
+      <Card className="max-w-3xl mx-auto">
+        <CardHeader>
+          <CardTitle className="text-center text-xl font-semibold">
+            Contract of Souq pass Digital lending Term Loan
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="prose prose-sm dark:prose-invert">
+            <p className="text-sm">
+              Now, therefore, the parties have entered these digital loan
+              contract to be processed and disbursed digitally as per this
+              contract and terms and conditions made an annex and integral part
+              of this contract.
+            </p>
+
+            <p className="text-sm">
+              This contract is made and entered into this 6 day of June the year
+              2024 between Mr/Ms Motuma Gishu whose address is in AA City/Town,
+              Contact motumagishu27@gmail.com ID / passport No. 54658784564
+            </p>
+
+            <p className="text-sm">and</p>
+
+            <p className="text-sm">
+              Cooperative Bank of Oromia S.C. whose address is Addis Ababa City,
+              Kirkos Sub-city, Africa Avenue, Flamingo Area, Get House Building
+              Tel: +251 115150229 P.O. Box: 16936.
+            </p>
+
+            <div className="space-y-4">
+              <h3 className="text-base font-semibold">
+                Article 1. Loan amount and its disbursement
+              </h3>
+              <p className="text-sm">
+                1.1. The bank has agreed to grant a digital loan to the
+                borrower, and the latter has agreed to borrow a loan amount of
+                birr 100000.0
+              </p>
+              <p className="text-sm">
+                1.2. The loan shall be disbursed to the borrower account
+                maintained at the bank.
+              </p>
+
+              <h3 className="text-base font-semibold">
+                Article 2. Interest Rate
+              </h3>
+              <p className="text-sm">
+                The bank shall charge an interest rate of 7.0% per month on the
+                daily outstanding principal loan balance.
+              </p>
+
+              <h3 className="text-base font-semibold">
+                Article 3. Loan Repayment
+              </h3>
+              <p className="text-sm">
+                3.1. The loan with its interest and other costs shall be totally
+                repaid in 6 months.
+              </p>
+              <p className="text-sm">
+                3.2. The repayment schedule will be provided over the platform.
+              </p>
+              <p className="text-sm">
+                3.3. In the event of default, without prejudice to any rights
+                and remedies the bank is entitled to under the law, the bank has
+                the right to set off any outstanding loan, including interest,
+                costs, and expenses, against any account of the borrower kept
+                with any branch of the bank, cheques payable to the borrower,
+                and money transfers made to the borrower through the bank.
+                Additionally, it is understood that the bank will consistently
+                block the amount equivalent to this month's repayment in the
+                borrower's account as a preventive measure.
+              </p>
+
+              <h3 className="text-base font-semibold">
+                Article 4. Applicable Law
+              </h3>
+              <p className="text-sm">
+                This contract shall be subject to, governed by, and constructed
+                in accordance with the relevant provision of Ethiopian Law.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <Checkbox id="agreement" />
+            <Label
+              htmlFor="agreement"
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              I agree to the banks loan agreement
+            </Label>
+          </div>
+
+          <Button
+            onClick={() => setShowResult("success")}
+            className="w-full sm:w-auto"
           >
-            I agree to the banks loan agreement
-          </label>
-        </div>
-        <div className="my-5 flex flex-col items-end">
-          <Button className="bg-[#00ADEF]  " title="Apply">
             Apply
           </Button>
-        </div>
-      </div>
-    </div>
+        </CardContent>
+      </Card>
+      <Dialog
+        open={showResult !== null}
+        onOpenChange={() => setShowResult(null)}
+      >
+        <DialogContent className="sm:max-w-[425px]">
+          {showResult === "success" ? (
+            <>
+              <DialogHeader>
+                <DialogTitle className="text-center flex flex-col items-center gap-2">
+                  <CheckCircle2 className="h-12 w-12 text-green-500" />
+                  Loan Application Successful!
+                </DialogTitle>
+                <DialogDescription className="text-center">
+                  Your loan application has been received and is being
+                  processed.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="bg-muted p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2">Loan Details:</h4>
+                  <p className="text-sm">Amount: 100,000 birr</p>
+                  <p className="text-sm">Interest Rate: 7.0% per month</p>
+                  <p className="text-sm">Term: 6 months</p>
+                </div>
+                <div className="space-y-2">
+                  <h4 className="font-semibold">Next Steps:</h4>
+                  <ul className="list-disc list-inside text-sm space-y-1">
+                    <li>Review your email for confirmation</li>
+                    <li>Prepare necessary documents</li>
+                    <li>Wait for our call for further instructions</li>
+                  </ul>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <DialogHeader>
+                <DialogTitle className="text-center flex flex-col items-center gap-2">
+                  <AlertCircle className="h-12 w-12 text-red-500" />
+                  Loan Application Unsuccessful
+                </DialogTitle>
+                <DialogDescription className="text-center">
+                  We're sorry, but we couldn't process your loan application at
+                  this time.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="bg-muted p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2">Possible Reasons:</h4>
+                  <ul className="list-disc list-inside text-sm space-y-1">
+                    <li>Insufficient credit score</li>
+                    <li>Incomplete or incorrect information</li>
+                    <li>Recent loan applications or existing debts</li>
+                    <li>Income requirements not met</li>
+                  </ul>
+                </div>
+                <div className="space-y-2">
+                  <h4 className="font-semibold">What You Can Do:</h4>
+                  <ul className="list-disc list-inside text-sm space-y-1">
+                    <li>Review your application for any errors</li>
+                    <li>Check your credit report for discrepancies</li>
+                    <li>Consider improving your credit score</li>
+                    <li>Speak with our financial advisor for guidance</li>
+                  </ul>
+                </div>
+              </div>
+            </>
+          )}
+          <DialogFooter>
+            {showResult === "success" ? (
+              <Button className="w-full" onClick={() => navigate("/myloans")}>
+                Close <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            ) : (
+              <Button className="w-full" onClick={() => setShowResult(null)}>
+                Try Again <RefreshCcw className="ml-2 h-4 w-4" />
+              </Button>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
-};
-
-export default Contract;
+}
