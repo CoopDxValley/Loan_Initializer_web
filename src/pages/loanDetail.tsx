@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   ArrowLeft,
   Calendar,
@@ -44,6 +44,36 @@ const loanStages = [
 export default function LoanDetails() {
   const [isDocumentDialogOpen, setIsDocumentDialogOpen] = useState(false);
   const navigate = useNavigate();
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const handleFilePick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click(); // Programmatically trigger the file input click
+    }
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+
+    if (files && files.length > 0) {
+      const file = files[0]; // Get the first selected file
+      setSelectedFile(file);
+      setIsDocumentDialogOpen(false);
+      // alert(`File Selected: \nName: ${file.name}\nSize: ${file.size} bytes`);
+    }
+  };
+
+  const handleEmailRedirect = () => {
+    const recipient = "example@example.com";
+    const subject = "Hello!";
+    const body = "I wanted to reach out to you.";
+    const mailtoLink = `mailto:${recipient}?subject=${encodeURIComponent(
+      subject
+    )}&body=${encodeURIComponent(body)}`;
+
+    window.location.href = mailtoLink; // Redirect to the email app
+  };
 
   // Mock loan data
   const loan = {
@@ -203,11 +233,19 @@ export default function LoanDetails() {
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
-              <Button>Select Files</Button>
+              <Button onClick={handleFilePick}>Select Files</Button>
             </div>
+            <input
+              type="file"
+              ref={fileInputRef}
+              style={{ display: "none" }}
+              onChange={handleFileChange}
+            />
           </DialogContent>
         </Dialog>
-        <Button>Contact Loan Officer</Button>
+        <Button onClick={() => handleEmailRedirect()}>
+          Contact Loan Officer
+        </Button>
       </CardFooter>
     </Card>
   );

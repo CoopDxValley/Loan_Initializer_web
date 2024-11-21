@@ -19,6 +19,7 @@ import KYC2 from "./components/KYC2";
 import Apply from "./pages/Apply";
 import Land from "./pages/Land";
 import LoanDetails from "./pages/loanDetail";
+import RM from "./pages/RM";
 
 function App() {
   return (
@@ -69,6 +70,17 @@ function App() {
                 <Layout>
                   {/* <LoanPackages /> */}
                   <Packages />
+                </Layout>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/RM"
+            element={
+              <PrivateRoute>
+                <Layout>
+                  {/* <LoanPackages /> */}
+                  <RM />
                 </Layout>
               </PrivateRoute>
             }

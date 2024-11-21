@@ -6,7 +6,7 @@ const Header2 = ({ setLogin }: any) => {
   const navigate = useNavigate();
   const { logout } = useAuth();
   return (
-    <div className="sticky top-0 w-full">
+    <div className="sticky top-0 w-full z-10">
       <div className="flex justify-between bg-[#fff] p-5 px-4 border-[1px] ">
         <div className="flex items-center justify-center">
           {/* <Tasks /> */}
@@ -30,19 +30,20 @@ const Header2 = ({ setLogin }: any) => {
             onClick={() => navigate("/myloans")}
             className="text-[#000] font-medium cursor-pointer"
           >
-            Applications
+            My Loans
           </span>
-          <span
-            onClick={() => navigate("/kyc1")}
-            className="text-[#000] font-medium cursor-pointer"
-          >
-            Kyc
-          </span>
+
           <span
             onClick={() => navigate("/packages")}
             className="text-[#000] font-medium cursor-pointer"
           >
             Packages
+          </span>
+          <span
+            onClick={() => navigate("/RM")}
+            className="text-[#000] font-medium cursor-pointer"
+          >
+            RM
           </span>
           <span
             onClick={() => {

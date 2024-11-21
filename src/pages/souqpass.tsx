@@ -19,10 +19,8 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { useNavigate } from "react-router-dom";
-import { DollarSign } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -31,6 +29,69 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
+
+type EditableAmountProps = {
+  value: number;
+  onChange: (value: number) => void;
+};
+
+const EditableAmount: React.FC<EditableAmountProps> = ({ value, onChange }) => {
+  const [isEditing, setIsEditing] = React.useState(false);
+  const [inputValue, setInputValue] = React.useState(value.toString());
+
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(value);
+  };
+
+  // Sync inputValue with the updated value from props
+  React.useEffect(() => {
+    if (!isEditing) {
+      setInputValue(value.toString());
+    }
+  }, [value, isEditing]);
+
+  const handleBlur = () => {
+    const parsedValue = parseInt(inputValue, 10);
+    if (!isNaN(parsedValue)) {
+      onChange(parsedValue);
+    }
+    setIsEditing(false);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleBlur();
+    } else if (e.key === "Escape") {
+      setInputValue(value.toString());
+      setIsEditing(false);
+    }
+  };
+
+  return isEditing ? (
+    <input
+      type="number"
+      value={inputValue}
+      onChange={(e) => setInputValue(e.target.value)}
+      onBlur={handleBlur}
+      onKeyDown={handleKeyDown}
+      autoFocus
+      className="border-b-2 text-center text-3xl font-bold w-full outline-none"
+    />
+  ) : (
+    <span
+      onClick={() => setIsEditing(true)}
+      className="cursor-pointer"
+      title="Click to edit"
+    >
+      {formatCurrency(value)}
+    </span>
+  );
+};
 
 export default function Component() {
   const [duration, setDuration] = React.useState("3");
@@ -170,7 +231,17 @@ export default function Component() {
             <CardContent className="space-y-6 pt-2">
               <div className="space-y-2">
                 <div className="text-3xl font-bold text-center">
-                  {formatCurrency(amount)}
+                  {/* {formatCurrency(amount)} */}
+                  <EditableAmount
+                    value={amount}
+                    onChange={(value) => {
+                      const parsedValue = Math.min(
+                        Math.max(value, 2000),
+                        70000
+                      );
+                      setAmount(parsedValue);
+                    }}
+                  />
                 </div>
               </div>
 
