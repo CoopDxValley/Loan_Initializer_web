@@ -1,8 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import Tasks from "../assets/Tasks.svg?react";
 import { useAuth } from "../../AuthProvider";
 
-const Header2 = ({ setLogin }: any) => {
+const Header2 = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
   return (

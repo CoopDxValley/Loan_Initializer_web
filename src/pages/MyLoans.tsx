@@ -68,12 +68,17 @@ const loanRequests = [
 
 export default function MyLoans() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [status, setStatus] = useState("All Statuses");
 
   const filteredLoans = loanRequests.filter(
     (loan) =>
-      loan.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      loan.status.toLowerCase().includes(searchTerm.toLowerCase())
+      (loan.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        loan.status.toLowerCase().includes(searchTerm.toLowerCase())) &&
+      (loan.status === status || status === "All Statuses")
   );
+
+  console.log(status);
+
   const navigate = useNavigate();
 
   return (
@@ -136,15 +141,17 @@ export default function MyLoans() {
                     Search
                   </Button>
                 </div>
-                <Select>
+                <Select onValueChange={(value: string) => setStatus(value)}>
                   <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder="Filter by status" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Statuses</SelectItem>
-                    <SelectItem value="review">Under Review</SelectItem>
-                    <SelectItem value="pending">Pending Approval</SelectItem>
-                    <SelectItem value="processing">Processing</SelectItem>
+                    <SelectItem value="All Statuses">All Statuses</SelectItem>
+                    <SelectItem value="Under Review">Under Review</SelectItem>
+                    <SelectItem value="Pending Approval">
+                      Pending Approval
+                    </SelectItem>
+                    <SelectItem value="Processing">Processing</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

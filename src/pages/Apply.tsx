@@ -3,77 +3,72 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getPurpose, getRequirements } from "@/lib/apis/dashboard_apis";
+import { LoadingScreen } from "@/components/loading-screen";
 
 export default function Apply() {
   const navigate = useNavigate();
+  const [amount, setAmount] = useState<number>(2000);
+  const minAmount = 2000;
+  const maxAmount = 70000;
 
   const handlePackages = () => {
     navigate("/packages");
   };
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseFloat(event.target.value);
+    setAmount(value);
+  };
+
+  const handleBlur = () => {
+    const numericValue = Number(amount);
+    if (numericValue < minAmount) setAmount(minAmount);
+    else if (numericValue > maxAmount) setAmount(maxAmount);
+  };
+
+  const requirements = useQuery({
+    queryKey: ["requirements"],
+    queryFn: getRequirements,
+  });
+
+  const purpose = useQuery({
+    queryKey: ["purpose"],
+    queryFn: getPurpose,
+  });
+
+  if (requirements.isLoading || purpose.isLoading) {
+    return <LoadingScreen message="Preparing your dashboard ..." />;
+  }
 
   return (
     <div className="flex flex-col mx-auto p-6 space-y-8">
       <div className="self-center space-y-4">
         <h2 className="text-xl font-semibold">To get a loan you need to be:</h2>
         <ul className="space-y-2">
-          <li className="flex items-center gap-2">
-            <svg
-              className="w-5 h-5 text-sky-500"
-              fill="none"
-              strokeWidth="2"
-              stroke="#15151c"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M5 13l4 4L19 7"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            18+ years
-          </li>
-          <li className="flex items-center gap-2">
-            <svg
-              className="w-5 h-5 text-sky-500"
-              fill="none"
-              strokeWidth="2"
-              stroke="#15151c"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M5 13l4 4L19 7"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            A permanent resident or citizen of ET
-          </li>
-          <li className="flex items-center gap-2">
-            <svg
-              className="w-5 h-5 text-sky-500"
-              fill="none"
-              strokeWidth="2"
-              stroke="#15151c"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M5 13l4 4L19 7"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            Earning a stable income
-          </li>
+          {requirements.data?.requirements.map((req: any, index: any) => (
+            <li className="flex items-center gap-2" key={index}>
+              <svg
+                className="w-5 h-5 text-sky-500"
+                fill="none"
+                strokeWidth="2"
+                stroke="#15151c"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M5 13l4 4L19 7"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              {req}
+            </li>
+          ))}
         </ul>
       </div>
 
@@ -86,7 +81,9 @@ export default function Apply() {
           </h2>
           <Input
             type="number"
-            value="70000"
+            value={amount}
+            onChange={handleChange}
+            onBlur={handleBlur}
             className="text-3xl text-center text-[#15151c] font-bold mb-2"
           />
           <p className="text-center text-sm text-muted-foreground">
@@ -98,21 +95,21 @@ export default function Apply() {
       <div className="md:w-[80%] self-center space-y-4">
         <h2 className="text-xl font-bold">What will you use the money for?</h2>
         <RadioGroup defaultValue="business1" className="grid grid-cols-2 gap-4">
-          {[...Array(6)].map((_, i) => (
+          {purpose.data?.purpose?.map((purp, i) => (
             <Label
-              key={i}
+              key={purp.id}
               className="border rounded-lg p-4 cursor-pointer [&:has(:checked)]:bg-muted"
             >
               <div className="flex items-center gap-2">
                 <RadioGroupItem value={`business${i + 1}`} className="mt-0" />
                 <Store className="w-6 h-6 text-[#15151c]" />
-                <span>Growing my business</span>
+                <span>{purp.title}</span>
               </div>
             </Label>
           ))}
         </RadioGroup>
 
-        <Collapsible className="w-full">
+        {/* <Collapsible className="w-full">
           <CollapsibleTrigger className="flex w-full items-center justify-between rounded-lg border p-4">
             <span>More loan purposes</span>
             <svg
@@ -133,7 +130,7 @@ export default function Apply() {
           <CollapsibleContent className="space-y-2">
             <div className="rounded-md p-4">Additional purposes here...</div>
           </CollapsibleContent>
-        </Collapsible>
+        </Collapsible> */}
         <Button
           onClick={() => handlePackages()}
           className="w-full text-lg py-6"

@@ -4,9 +4,22 @@ import { Check } from "lucide-react";
 import LandingImage from "../assets/landing_image.svg?react";
 import Header from "@/components/Header";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { getLoanTypes } from "@/lib/apis/landing_apis";
+import { LoadingScreen } from "@/components/loading-screen";
 
 export default function Land() {
   const navigate = useNavigate();
+
+  const { isLoading, isFetching, data } = useQuery({
+    queryKey: ["loan_types"],
+    queryFn: getLoanTypes,
+  });
+
+  if (isLoading || isFetching) {
+    return <LoadingScreen message="Preparing ..." />;
+  }
+
   return (
     <div className="flex flex-col min-h-screen mx-auto">
       <Header />
@@ -142,7 +155,7 @@ export default function Land() {
             Types of personal loans
           </h2>
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
+            {data?.loan_types?.map((loan, i) => (
               <Card key={i}>
                 <CardContent className="p-6">
                   <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
@@ -161,10 +174,9 @@ export default function Land() {
                       <path d="M3 15v4c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2v-4M17 8l-5-5-5 5M12 3v12" />
                     </svg>
                   </div>
-                  <h3 className="font-bold mb-2">CAR LOANS</h3>
+                  <h3 className="font-bold mb-2">{loan.name}</h3>
                   <p className="text-muted-foreground mb-4">
-                    Got your eye on that new or used vehicle? Our auto loan can
-                    help get you out on the road.
+                    {loan.description}
                   </p>
                   <Button variant="link" className="p-0 h-auto text-primary">
                     Find out more

@@ -1,7 +1,10 @@
+import { LoadingScreen } from "@/components/loading-screen";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { getPackages } from "@/lib/apis/package_apis";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -18,6 +21,25 @@ export default function Packages() {
       navigate("/kyc1");
     }
   };
+
+  const queryClient = useQueryClient();
+
+  const packages = useQuery({
+    queryKey: ["packages"],
+    queryFn: async () => getPackages,
+  });
+
+  const filterPackages = useMutation({
+    mutationFn: getPackages,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["packages"] });
+    },
+  });
+
+  if (packages.isLoading) {
+    return <LoadingScreen message="Preparing your packages ..." />;
+  }
+
   return (
     <div className="w-full">
       <div className="bg-[#09090b] text-white p-8 mb-8">
@@ -51,7 +73,12 @@ export default function Packages() {
                   </span>
                 </div>
               </div>
-              <Button className="bg-[#000] hover:bg-blue-700">
+              <Button
+                onClick={() => {
+                  filterPackages.mutate({ amount: "", term: "" });
+                }}
+                className="bg-[#000] hover:bg-blue-700"
+              >
                 Update results
               </Button>
             </div>
