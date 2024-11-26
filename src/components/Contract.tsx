@@ -10,20 +10,18 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import {
-  CheckCircle2,
-  ArrowRight,
-  AlertCircle,
-  RefreshCcw,
-} from "lucide-react";
+import { CheckCircle2, AlertCircle } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export default function Component() {
   const [showResult, setShowResult] = useState<"success" | "failure" | null>(
     null
   );
+  const [agreed, setAgreed] = useState(false);
   const navigate = useNavigate();
+
   return (
     <>
       <Card className="max-w-3xl mx-auto">
@@ -110,7 +108,11 @@ export default function Component() {
           </div>
 
           <div className="flex items-center space-x-2">
-            <Checkbox id="agreement" />
+            <Checkbox
+              id="agreement"
+              checked={agreed}
+              onCheckedChange={(checked: boolean) => setAgreed(checked)}
+            />
             <Label
               htmlFor="agreement"
               className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -121,6 +123,7 @@ export default function Component() {
 
           <Button
             onClick={() => setShowResult("success")}
+            disabled={!agreed}
             className="w-full sm:w-auto"
           >
             Apply
@@ -198,11 +201,11 @@ export default function Component() {
           <DialogFooter>
             {showResult === "success" ? (
               <Button className="w-full" onClick={() => navigate("/myloans")}>
-                Close <ArrowRight className="ml-2 h-4 w-4" />
+                Close
               </Button>
             ) : (
               <Button className="w-full" onClick={() => setShowResult(null)}>
-                Try Again <RefreshCcw className="ml-2 h-4 w-4" />
+                Try Again
               </Button>
             )}
           </DialogFooter>

@@ -29,6 +29,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { calculateLoanPackages } from "@/lib/apis/souqpass_apis";
+import { LoadingScreen } from "@/components/loading-screen";
 
 type EditableAmountProps = {
   value: number;
@@ -95,15 +98,13 @@ const EditableAmount: React.FC<EditableAmountProps> = ({ value, onChange }) => {
 
 export default function Component() {
   const [duration, setDuration] = React.useState("3");
-  const [revenue, setRevenue] = React.useState({
-    feb: "",
-    mar: "",
-    apr: "",
-  });
+  const [revenueType, setRevenueType] = React.useState("monthly");
   const [showResults, setShowResults] = React.useState(false);
   const [showLoanOffer, setShowLoanOffer] = React.useState(false);
   const [amount, setAmount] = React.useState(2000);
   const navigate = useNavigate();
+
+  const [revenue, setRevenue] = React.useState<{ [key: string]: string }>({});
 
   const handleRevenueChange = (month: string, value: string) => {
     setRevenue((prev) => ({
@@ -111,6 +112,49 @@ export default function Component() {
       [month]: value,
     }));
   };
+
+  const getMonths = (duration: string) => {
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    const currentMonth = new Date().getMonth(); // Index of the current month
+    const totalMonths = parseInt(duration);
+
+    const months = [];
+    for (let i = 0; i < totalMonths; i++) {
+      const index = (currentMonth - i + 12) % 12; // Go backwards and wrap around if needed
+      months.push(monthNames[index]);
+    }
+
+    return months;
+  };
+
+  const selectedMonths = getMonths(duration);
+
+  const queryClient = useQueryClient();
+
+  const calculateLoanAmount = useMutation({
+    mutationFn: calculateLoanPackages,
+  });
+
+  if (calculateLoanAmount.isPending) {
+    return <LoadingScreen message="Calculating your Loan Amount ..." />;
+  }
+
+  if (calculateLoanAmount.isSuccess) {
+    setShowResults(true);
+  }
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("en-US", {
@@ -133,63 +177,102 @@ export default function Component() {
             Request For Loan
           </h2>
 
-          <RadioGroup defaultValue="can-provide">
+          <RadioGroup
+            onValueChange={(event: any) => setRevenueType(event)}
+            defaultValue="monthly"
+          >
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="can-provide" id="can-provide" />
+              <RadioGroupItem value="monthly" id="can-provide" />
               <Label htmlFor="can-provide">I Can Provide Monthly Revenue</Label>
             </div>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="cannot-provide" id="cannot-provide" />
+              <RadioGroupItem value="souqpass" id="cannot-provide" />
               <Label htmlFor="cannot-provide">
-                I Can Provide Monthly Revenue
+                Use My Monthly Revenue from souqpass
               </Label>
             </div>
           </RadioGroup>
         </div>
 
-        <div>
-          <div className="flex items-center mb-4">
-            <h3 className="text-base font-semibold">Select Duration</h3>
-            <span className="text-red-500 ml-1">*</span>
-          </div>
+        {revenueType === "monthly" && (
+          <>
+            {/* <div>
+              <div className="flex items-center mb-4">
+                <h3 className="text-base font-semibold">Select Duration</h3>
+                <span className="text-red-500 ml-1">*</span>
+              </div>
 
-          <div className="flex gap-2">
-            {["3", "6", "9"].map((months) => (
-              <Button
-                key={months}
-                variant={duration === months ? "default" : "secondary"}
-                onClick={() => setDuration(months)}
-                className="flex-1"
-              >
-                {months} Months
-              </Button>
-            ))}
-          </div>
-        </div>
+              <div className="flex gap-2">
+                {["3", "6", "9"].map((months) => (
+                  <Button
+                    key={months}
+                    variant={duration === months ? "default" : "secondary"}
+                    onClick={() => setDuration(months)}
+                    className="flex-1"
+                  >
+                    {months} Months
+                  </Button>
+                ))}
+              </div>
+            </div> */}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <Input
-              placeholder="Feb, 2024 Revenue"
-              value={revenue.feb}
-              onChange={(e) => handleRevenueChange("feb", e.target.value)}
-            />
-          </div>
-          <div>
-            <Input
-              placeholder="Mar, 2024 Revenue"
-              value={revenue.mar}
-              onChange={(e) => handleRevenueChange("mar", e.target.value)}
-            />
-          </div>
-          <div>
-            <Input
-              placeholder="Apr, 2024 Revenue"
-              value={revenue.apr}
-              onChange={(e) => handleRevenueChange("apr", e.target.value)}
-            />
-          </div>
-        </div>
+            {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <Input
+                  placeholder="Feb, 2024 Revenue"
+                  value={revenue.feb}
+                  onChange={(e) => handleRevenueChange("feb", e.target.value)}
+                />
+              </div>
+              <div>
+                <Input
+                  placeholder="Mar, 2024 Revenue"
+                  value={revenue.mar}
+                  onChange={(e) => handleRevenueChange("mar", e.target.value)}
+                />
+              </div>
+              <div>
+                <Input
+                  placeholder="Apr, 2024 Revenue"
+                  value={revenue.apr}
+                  onChange={(e) => handleRevenueChange("apr", e.target.value)}
+                />
+              </div>
+            </div> */}
+
+            <div className="flex items-center mb-4">
+              <h3 className="text-base font-semibold">Select Duration</h3>
+              <span className="text-red-500 ml-1">*</span>
+            </div>
+
+            <div className="flex gap-2">
+              {["3", "6", "9"].map((months) => (
+                <Button
+                  key={months}
+                  variant={duration === months ? "default" : "secondary"}
+                  onClick={() => setDuration(months)}
+                  className="flex-1"
+                >
+                  {months} Months
+                </Button>
+              ))}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+              {selectedMonths.map((month, index) => (
+                <div key={index}>
+                  <Input
+                    placeholder={`${month}, ${new Date().getFullYear()} Revenue`}
+                    value={revenue[month.toLowerCase()] || ""}
+                    onChange={(e) =>
+                      handleRevenueChange(month.toLowerCase(), e.target.value)
+                    }
+                  />
+                </div>
+              ))}
+            </div>
+          </>
+        )}
 
         {/* <div className="text-sm">This Months Revenue: 189,072 Birr</div> */}
 
@@ -212,11 +295,13 @@ export default function Component() {
         </div>
 
         <Button
-          onClick={() => setShowLoanOffer(true)}
+          onClick={() => {
+            setShowLoanOffer(true);
+          }}
           className="w-full"
           size="lg"
         >
-          Calculate
+          Proceed
         </Button>
       </div>
 
@@ -266,11 +351,17 @@ export default function Component() {
               <Button
                 onClick={() => {
                   setShowLoanOffer(false);
+
+                  // calculateLoanAmount.mutate({
+                  //   amount: 2000,
+                  //   duration: 6,
+                  //   revenue: { Jan: "5000", Feb: "5200", Mar: "5100" },
+                  // });
                   setShowResults(true);
                 }}
                 className="w-full"
               >
-                Proceed
+                Calculate
               </Button>
             </CardFooter>
           </Card>
