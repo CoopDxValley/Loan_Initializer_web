@@ -30,7 +30,10 @@ import {
 } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { calculateLoanPackages } from "@/lib/apis/souqpass_apis";
+import {
+  calculateLoanBracket,
+  calculateLoanPackage,
+} from "@/lib/apis/souqpass_apis";
 import { LoadingScreen } from "@/components/loading-screen";
 
 type EditableAmountProps = {
@@ -142,17 +145,27 @@ export default function Component() {
 
   const selectedMonths = getMonths(duration);
 
-  const queryClient = useQueryClient();
-
-  const calculateLoanAmount = useMutation({
-    mutationFn: calculateLoanPackages,
+  const calculateLoanOffer = useMutation({
+    mutationFn: calculateLoanPackage,
   });
 
-  if (calculateLoanAmount.isPending) {
+  const calculateLoanMinMax = useMutation({
+    mutationFn: calculateLoanBracket,
+  });
+
+  if (calculateLoanMinMax.isPending) {
     return <LoadingScreen message="Calculating your Loan Amount ..." />;
   }
 
-  if (calculateLoanAmount.isSuccess) {
+  if (calculateLoanOffer.isPending) {
+    return <LoadingScreen message="Calculating your Loan Offer ..." />;
+  }
+
+  if (calculateLoanMinMax.isSuccess) {
+    setShowLoanOffer(true);
+  }
+
+  if (calculateLoanOffer.isSuccess) {
     setShowResults(true);
   }
 
@@ -297,6 +310,7 @@ export default function Component() {
         <Button
           onClick={() => {
             setShowLoanOffer(true);
+            // calculateLoanMinMax.mutate({duration: parseInt(duration), revenue})
           }}
           className="w-full"
           size="lg"
@@ -317,6 +331,7 @@ export default function Component() {
               <div className="space-y-2">
                 <div className="text-3xl font-bold text-center">
                   {/* {formatCurrency(amount)} */}
+                  {/* {calculateLoanMinMax.isSuccess && ( */}
                   <EditableAmount
                     value={amount}
                     onChange={(value) => {
@@ -324,9 +339,14 @@ export default function Component() {
                         Math.max(value, 2000),
                         70000
                       );
+                      // const parsedValue = Math.min(
+                      //   Math.max(value, calculateLoanMinMax.data.min),
+                      //   calculateLoanMinMax.data.max
+                      // );
                       setAmount(parsedValue);
                     }}
                   />
+                  {/* )} */}
                 </div>
               </div>
 
@@ -352,7 +372,7 @@ export default function Component() {
                 onClick={() => {
                   setShowLoanOffer(false);
 
-                  // calculateLoanAmount.mutate({
+                  // calculateLoanOffer.mutate({
                   //   amount: 2000,
                   //   duration: 6,
                   //   revenue: { Jan: "5000", Feb: "5200", Mar: "5100" },
@@ -420,7 +440,15 @@ export default function Component() {
           </div>
 
           <DialogFooter>
-            <Button onClick={() => navigate("/contract")}>Confirm</Button>
+            <Button
+              onClick={() =>
+                navigate("/contract", {
+                  state: { amount: 13000, interest: 2.0, term: duration },
+                })
+              }
+            >
+              Confirm
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

@@ -1,3 +1,5 @@
+import axios from "axios";
+
 // types.ts
 export interface Package {
   id: string;
@@ -11,11 +13,14 @@ export interface Package {
 
 // apis.ts
 export const getPackages = async (
-  parameters: any = "All"
+  amount: string,
+  term: string
 ): Promise<Package[]> => {
-  const response = await fetch(`/api/packages/${parameters}`);
-  if (!response.ok) {
+  const response = await axios.get(
+    `http://localhost:3000/api/packages/${amount}/${term}`
+  );
+  if (response.status !== 200) {
     throw new Error("Failed to fetch packages");
   }
-  return response.json();
+  return response.data;
 };

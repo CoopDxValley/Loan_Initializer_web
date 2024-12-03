@@ -12,8 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { CheckCircle2, AlertCircle } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 
 export default function Component() {
   const [showResult, setShowResult] = useState<"success" | "failure" | null>(
@@ -21,6 +20,11 @@ export default function Component() {
   );
   const [agreed, setAgreed] = useState(false);
   const navigate = useNavigate();
+  const location: any = useLocation();
+
+  if (!location?.state?.amount) {
+    return <Navigate to="/packages" replace />;
+  }
 
   return (
     <>
@@ -122,7 +126,9 @@ export default function Component() {
           </div>
 
           <Button
-            onClick={() => setShowResult("success")}
+            onClick={() => {
+              setShowResult("success");
+            }}
             disabled={!agreed}
             className="w-full sm:w-auto"
           >
@@ -132,7 +138,14 @@ export default function Component() {
       </Card>
       <Dialog
         open={showResult !== null}
-        onOpenChange={() => setShowResult(null)}
+        onOpenChange={() => {
+          if (showResult === "success") {
+            navigate(location.pathname, { replace: true, state: null });
+            navigate("/myloans");
+          } else {
+            setShowResult(null);
+          }
+        }}
       >
         <DialogContent className="sm:max-w-[425px]">
           {showResult === "success" ? (
@@ -150,9 +163,13 @@ export default function Component() {
               <div className="space-y-4">
                 <div className="bg-muted p-4 rounded-lg">
                   <h4 className="font-semibold mb-2">Loan Details:</h4>
-                  <p className="text-sm">Amount: 100,000 birr</p>
-                  <p className="text-sm">Interest Rate: 7.0% per month</p>
-                  <p className="text-sm">Term: 6 months</p>
+                  <p className="text-sm">
+                    Amount: {location?.state.amount} birr
+                  </p>
+                  <p className="text-sm">
+                    Interest Rate: {location?.state.interest}% per month
+                  </p>
+                  <p className="text-sm">Term: {location?.state.term} months</p>
                 </div>
                 <div className="space-y-2">
                   <h4 className="font-semibold">Next Steps:</h4>
@@ -200,7 +217,13 @@ export default function Component() {
           )}
           <DialogFooter>
             {showResult === "success" ? (
-              <Button className="w-full" onClick={() => navigate("/myloans")}>
+              <Button
+                className="w-full"
+                onClick={() => {
+                  navigate(location.pathname, { replace: true, state: null });
+                  navigate("/myloans");
+                }}
+              >
                 Close
               </Button>
             ) : (

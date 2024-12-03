@@ -1,15 +1,28 @@
 import { LoadingScreen } from "@/components/loading-screen";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { getPackages } from "@/lib/apis/package_apis";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { XCircle } from "lucide-react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 export default function Packages() {
   const { kyc } = useSelector((state: any) => state.user);
+  const [term, setTerm] = useState("24");
+  const [amount, setAmount] = useState("70000");
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const handleApplication = (title: string) => {
@@ -24,21 +37,26 @@ export default function Packages() {
 
   const queryClient = useQueryClient();
 
-  const packages = useQuery({
-    queryKey: ["packages"],
-    queryFn: async () => getPackages,
-  });
+  // const packages = useQuery({
+  //   queryKey: ["packages"],
+  //   queryFn: async () => getPackages(amount, term),
+  // });
 
-  const filterPackages = useMutation({
-    mutationFn: getPackages,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["packages"] });
-    },
-  });
+  // const filterPackages = useMutation({
+  //   mutationFn: ({ amount, term }: { amount: string; term: string }) =>
+  //     getPackages(amount, term),
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries({ queryKey: ["packages"] });
+  //   },
+  //   onError: () => {
+  //     console.log("called");
+  //     setIsOpen(true);
+  //   },
+  // });
 
-  if (packages.isLoading) {
-    return <LoadingScreen message="Preparing your packages ..." />;
-  }
+  // if (packages.isLoading || filterPackages.isPending) {
+  //   return <LoadingScreen message="Preparing your packages ..." />;
+  // }
 
   return (
     <div className="w-full">
@@ -50,7 +68,6 @@ export default function Packages() {
           </p>
         </div>
       </div>
-
       <div className=" w-full mx-auto px-4">
         <Card className="mb-8">
           <CardContent className="p-6">
@@ -61,13 +78,25 @@ export default function Packages() {
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
                     $
                   </span>
-                  <Input className="pl-7" id="amount" defaultValue="70000" />
+                  <Input
+                    className="pl-7"
+                    id="amount"
+                    defaultValue="70000"
+                    type="number"
+                    onChange={(event) => setAmount(event.target.value)}
+                  />
                 </div>
               </div>
               <div>
                 <Label htmlFor="term">Loan term</Label>
                 <div className="relative">
-                  <Input id="term" defaultValue="24" />
+                  <Input
+                    id="term"
+                    type="number"
+                    defaultValue="24"
+                    onChange={(event) => setTerm(event.target.value)}
+                    // style={{ zIndex: 10 }}
+                  />
                   <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">
                     months
                   </span>
@@ -75,7 +104,7 @@ export default function Packages() {
               </div>
               <Button
                 onClick={() => {
-                  filterPackages.mutate({ amount: "", term: "" });
+                  filterPackages.mutate({ amount, term });
                 }}
                 className="bg-[#000] hover:bg-blue-700"
               >
@@ -144,6 +173,26 @@ export default function Packages() {
           </Card>
         ))}
       </div>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-destructive">
+              <XCircle className="h-5 w-5" />
+              Invalid Search Parameters
+            </DialogTitle>
+            <DialogDescription>
+              Your loan search contains invalid parameters. Please review and
+              correct the following:
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <ul className="list-disc pl-5 space-y-2">
+              <li>Loan amount must be a positive number</li>
+              <li>Loan term must be at least 1 month</li>
+            </ul>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

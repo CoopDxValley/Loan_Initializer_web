@@ -16,13 +16,14 @@ import Land from "./pages/Land";
 import LoanDetails from "./pages/loanDetail";
 import RM from "./pages/RM";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import StylizedServerError from "./components/Error_Screen";
 
 function App() {
   const queryClient = new QueryClient();
 
   return (
-    <AuthProvider>
-      <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
         <BrowserRouter future={{ v7_startTransition: true }}>
           <Routes>
             <Route path="/login" element={<Login />} />
@@ -121,10 +122,11 @@ function App() {
                 </PrivateRoute>
               }
             />
+            {/* <Route path="/error" element={<StylizedServerError />} /> */}
           </Routes>
         </BrowserRouter>
-      </QueryClientProvider>
-    </AuthProvider>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }
 

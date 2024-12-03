@@ -26,7 +26,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import {
+  getLoans,
+  getTotalLoanAmount,
+  getTotalPendingRequests,
+} from "@/lib/apis/myloans_apis";
+import { LoadingScreen } from "@/components/loading-screen";
+import StylizedServerError from "@/components/Error_Screen";
 
 const loanRequests = [
   {
@@ -68,6 +76,7 @@ const loanRequests = [
 
 export default function MyLoans() {
   const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
   const [status, setStatus] = useState("All Statuses");
 
   const filteredLoans = loanRequests.filter(
@@ -77,9 +86,28 @@ export default function MyLoans() {
       (loan.status === status || status === "All Statuses")
   );
 
-  console.log(status);
+  // const myloans = useQuery({
+  //   queryKey: ["myloans"],
+  //   queryFn: () => getLoans,
+  // });
 
-  const navigate = useNavigate();
+  // const totalAmount = useQuery({
+  //   queryKey: ["myloans", { type: "totalAmount" }],
+  //   queryFn: async () => await getTotalLoanAmount(1),
+  // });
+
+  // const totalPending = useQuery({
+  //   queryKey: ["myloans", { type: "totalPending" }],
+  //   queryFn: async () => await getTotalPendingRequests(1),
+  // });
+
+  // if (myloans.isLoading || totalAmount.isLoading || totalPending.isLoading) {
+  //   return <LoadingScreen message="Preparing your loans ..." />;
+  // }
+
+  // if (myloans.isError || totalAmount.isError || totalPending.isLoading) {
+  //   return <StylizedServerError query={"myloans"} />;
+  // }
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -174,7 +202,11 @@ export default function MyLoans() {
                       <TableCell>{loan.date}</TableCell>
                       <TableCell>
                         <Button
-                          onClick={() => navigate("/loan_details")}
+                          onClick={() =>
+                            navigate("/loan_details", {
+                              state: { loan_id: loan.id },
+                            })
+                          }
                           variant="ghost"
                         >
                           View Details
