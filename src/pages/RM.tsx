@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,8 @@ import {
   Phone,
   Video,
   Send,
+  CheckCircle2,
+  XCircle,
 } from "lucide-react";
 import {
   Card,
@@ -20,14 +22,104 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { pullFunds, setMeeting, setRating } from "@/lib/apis/rm_apis";
+import { LoadingScreen } from "@/components/loading-screen";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function RM() {
-  const [activeTab, setActiveTab] = React.useState("messages");
-  const [rating, setRating] = React.useState(0);
+  const [activeTab, setActiveTab] = useState("messages");
+  const [feedback, setFeedback] = useState("");
+  const [rate, setRate] = useState(0);
+  const [date, setDate] = useState<string>("");
+  const [time, setTime] = useState<string>("");
+  const [purpose, setPurpose] = useState<string>("");
+  const [sourceBank, setSourceBank] = useState<string>("");
+  const [amount, setAmount] = useState<string>("");
+  const [showMeeting, setShowMeeting] = useState<boolean>(false);
+  const [showFund, setShowFund] = useState<boolean>(false);
+  const [showRating, setShowRating] = useState<boolean>(false);
+  const [meetingSuccess, setMeetingSuccess] = useState<boolean>(false);
+  const [fundSuccess, setFundSuccess] = useState<boolean>(false);
+  const [ratingSuccess, setRatingSuccess] = useState<boolean>(false);
 
   const handleRating = (value: number) => {
-    setRating(value);
+    setRate(value);
   };
+
+  const meeting = useMutation({
+    mutationFn: async ({
+      date,
+      time,
+      purpose,
+    }: {
+      date: string;
+      time: string;
+      purpose: string;
+    }) => setMeeting({ date, time, purpose }),
+    onSuccess: () => {
+      setShowMeeting(true);
+      setMeetingSuccess(true);
+    },
+    onError: () => {
+      setShowMeeting(true);
+      setMeetingSuccess(true);
+    },
+  });
+
+  const fund = useMutation({
+    mutationFn: async ({
+      sourceBank,
+      amount,
+      purpose,
+    }: {
+      sourceBank: string;
+      amount: string;
+      purpose: string;
+    }) => pullFunds({ sourceBank, amount, purpose }),
+    onSuccess: () => {
+      setShowFund(true);
+      setFundSuccess(true);
+    },
+    onError: () => {
+      setShowFund(true);
+      setFundSuccess(false);
+    },
+  });
+
+  const rating = useMutation({
+    mutationFn: async ({
+      rating,
+      feedback,
+    }: {
+      rating: number;
+      feedback: string;
+    }) => setRating({ rating, feedback }),
+    onSuccess: () => {
+      setShowRating(true);
+      setRatingSuccess(true);
+    },
+    onError: () => {
+      setShowRating(true);
+      setRatingSuccess(false);
+    },
+  });
+
+  if (meeting.isPending) {
+    return <LoadingScreen message="Setting your meeting ..." />;
+  }
+  if (fund.isPending) {
+    return <LoadingScreen message="Process your fund pulling request ..." />;
+  }
+  if (rating.isPending) {
+    return <LoadingScreen message="Submitting your rating ..." />;
+  }
 
   return (
     <div className="container mx-auto p-4 max-w-6xl">
@@ -160,13 +252,21 @@ export default function RM() {
                           <label htmlFor="date" className="text-sm font-medium">
                             Date
                           </label>
-                          <Input id="date" type="date" />
+                          <Input
+                            id="date"
+                            type="date"
+                            onChange={(event) => setDate(event.target.value)}
+                          />
                         </div>
                         <div className="space-y-2">
                           <label htmlFor="time" className="text-sm font-medium">
                             Time
                           </label>
-                          <Input id="time" type="time" />
+                          <Input
+                            id="time"
+                            type="time"
+                            onChange={(event) => setTime(event.target.value)}
+                          />
                         </div>
                       </div>
                       <div className="space-y-2">
@@ -179,9 +279,20 @@ export default function RM() {
                         <Input
                           id="purpose"
                           placeholder="Briefly describe the purpose of the meeting"
+                          onChange={(event) => setPurpose(event.target.value)}
                         />
                       </div>
-                      <Button className="w-full">Request Meeting</Button>
+                      <Button
+                        className="w-full"
+                        onClick={(
+                          event: React.MouseEvent<HTMLButtonElement>
+                        ) => {
+                          event.preventDefault();
+                          meeting.mutate({ date, time, purpose });
+                        }}
+                      >
+                        Request Meeting
+                      </Button>
                     </form>
                   </CardContent>
                 </Card>
@@ -206,6 +317,9 @@ export default function RM() {
                         <Input
                           id="sourceBank"
                           placeholder="Enter the name of the source bank"
+                          onChange={(event) =>
+                            setSourceBank(event.target.value)
+                          }
                         />
                       </div>
                       <div className="space-y-2">
@@ -216,6 +330,7 @@ export default function RM() {
                           id="amount"
                           type="number"
                           placeholder="Enter the amount to transfer"
+                          onChange={(event) => setAmount(event.target.value)}
                         />
                       </div>
                       <div className="space-y-2">
@@ -228,9 +343,20 @@ export default function RM() {
                         <Input
                           id="purpose"
                           placeholder="Briefly describe the purpose of the transfer"
+                          onChange={(event) => setPurpose(event.target.value)}
                         />
                       </div>
-                      <Button className="w-full">Submit Request</Button>
+                      <Button
+                        className="w-full"
+                        onClick={(
+                          event: React.MouseEvent<HTMLButtonElement>
+                        ) => {
+                          event.preventDefault();
+                          fund.mutate({ sourceBank, amount, purpose });
+                        }}
+                      >
+                        Submit Request
+                      </Button>
                     </form>
                   </CardContent>
                 </Card>
@@ -259,7 +385,7 @@ export default function RM() {
                             >
                               <Star
                                 className={`h-6 w-6 ${
-                                  star <= rating
+                                  star <= rate
                                     ? "text-yellow-400 fill-yellow-400"
                                     : "text-gray-300"
                                 } cursor-pointer`}
@@ -279,9 +405,22 @@ export default function RM() {
                           id="feedback"
                           className="w-full h-32 p-2 border rounded-md"
                           placeholder="Please provide your detailed feedback..."
+                          onChange={(
+                            event: React.ChangeEvent<HTMLTextAreaElement>
+                          ) => setFeedback(event.target.value)}
                         ></textarea>
                       </div>
-                      <Button className="w-full">Submit Feedback</Button>
+                      <Button
+                        onClick={(
+                          event: React.MouseEvent<HTMLButtonElement>
+                        ) => {
+                          event.preventDefault();
+                          rating.mutate({ rating: rate, feedback });
+                        }}
+                        className="w-full"
+                      >
+                        Submit Feedback
+                      </Button>
                     </form>
                   </CardContent>
                 </Card>
@@ -289,6 +428,82 @@ export default function RM() {
             </Tabs>
           </CardContent>
         </Card>
+
+        {/* Modals */}
+        <Dialog open={showMeeting} onOpenChange={setShowMeeting}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <div className="flex items-center gap-4">
+                {meetingSuccess ? (
+                  <CheckCircle2 className="h-8 w-8 text-green-500" />
+                ) : (
+                  <XCircle className="h-8 w-8 text-red-500" />
+                )}
+                <div className="grid gap-1">
+                  <DialogTitle>
+                    {meetingSuccess ? "Meeting Scheduled" : "Scheduling Failed"}
+                  </DialogTitle>
+                  <DialogDescription>
+                    {meetingSuccess
+                      ? "Your meeting has been successfully scheduled. You'll receive a confirmation email shortly."
+                      : "We couldn't schedule your meeting at this time. Please try again later."}
+                  </DialogDescription>
+                </div>
+              </div>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={showFund} onOpenChange={setShowFund}>
+          <DialogContent className=" sm:max-w-md">
+            <DialogHeader className="flex flex-col items-center gap-2">
+              <div className="flex items-center gap-4">
+                {fundSuccess ? (
+                  <CheckCircle2 className="h-8 w-8 text-green-500" />
+                ) : (
+                  <XCircle className="h-8 w-8 text-red-500" />
+                )}
+                <div className="grid gap-1">
+                  <DialogTitle className="text-xl font-semibold">
+                    {fundSuccess
+                      ? "Fund Transfer Request Successful"
+                      : "Fund Transfer Request Failed"}
+                  </DialogTitle>
+                  <DialogDescription className="">
+                    {fundSuccess
+                      ? `Your fund pulling request for ${amount} from ${sourceBank} has been successfully submitted. You will receive a confirmation email shortly.`
+                      : "There was an error processing your fund pulling request. Please try again later."}
+                  </DialogDescription>
+                </div>
+              </div>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={showRating} onOpenChange={setShowRating}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader className="flex flex-col items-center gap-2">
+              <div className="flex items-center gap-4">
+                {ratingSuccess ? (
+                  <CheckCircle2 className="h-8 w-8 text-green-500" />
+                ) : (
+                  <XCircle className="h-8 w-8 text-red-500" />
+                )}
+                <div className="grid gap-1">
+                  <DialogTitle className="text-xl font-semibold">
+                    {ratingSuccess ? "Feedback Submitted" : "Submission Failed"}
+                  </DialogTitle>
+                  <DialogDescription className="">
+                    {ratingSuccess
+                      ? `  Thank you for providing your feedback on your Relationship
+                    Manager's performance.`
+                      : "We encountered an error while submitting your feedback. Please try again."}
+                  </DialogDescription>
+                </div>
+              </div>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

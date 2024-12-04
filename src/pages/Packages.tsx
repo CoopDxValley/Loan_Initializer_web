@@ -35,7 +35,7 @@ export default function Packages() {
     }
   };
 
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
 
   // const packages = useQuery({
   //   queryKey: ["packages"],
@@ -104,7 +104,7 @@ export default function Packages() {
               </div>
               <Button
                 onClick={() => {
-                  filterPackages.mutate({ amount, term });
+                  // filterPackages.mutate({ amount, term });
                 }}
                 className="bg-[#000] hover:bg-blue-700"
               >
