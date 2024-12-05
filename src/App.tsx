@@ -17,6 +17,7 @@ import LoanDetails from "./pages/loanDetail";
 import RM from "./pages/RM";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import StylizedServerError from "./components/Error_Screen";
+import { KYCForm } from "./components/Kyc/kyc-info";
 
 function App() {
   const queryClient = new QueryClient();
@@ -40,7 +41,7 @@ function App() {
                 </PrivateRoute>
               }
             />
-            <Route
+            {/* <Route
               path="/kyc1"
               element={
                 <PrivateRoute>
@@ -56,6 +57,16 @@ function App() {
                 <PrivateRoute>
                   <Layout>
                     <KYC2 />
+                  </Layout>
+                </PrivateRoute>
+              }
+            /> */}
+            <Route
+              path="/kyc"
+              element={
+                <PrivateRoute>
+                  <Layout>
+                    <KYCForm />
                   </Layout>
                 </PrivateRoute>
               }

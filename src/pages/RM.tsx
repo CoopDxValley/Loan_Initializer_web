@@ -69,7 +69,7 @@ export default function RM() {
     },
     onError: () => {
       setShowMeeting(true);
-      setMeetingSuccess(true);
+      setMeetingSuccess(false);
     },
   });
 
@@ -114,9 +114,11 @@ export default function RM() {
   if (meeting.isPending) {
     return <LoadingScreen message="Setting your meeting ..." />;
   }
+
   if (fund.isPending) {
-    return <LoadingScreen message="Process your fund pulling request ..." />;
+    return <LoadingScreen message="Processing your fund pulling request ..." />;
   }
+
   if (rating.isPending) {
     return <LoadingScreen message="Submitting your rating ..." />;
   }

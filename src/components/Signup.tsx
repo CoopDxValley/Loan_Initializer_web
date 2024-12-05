@@ -4,6 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import { Signup } from "@/lib/apis/signup_apis";
+import { Alert, AlertDescription } from "./ui/alert";
+import { LoadingScreen } from "./loading-screen";
 
 export default function Component() {
   const [formData, setFormData] = useState({
@@ -14,12 +18,8 @@ export default function Component() {
     password: "",
     confirmPassword: "",
   });
+  const [error, setError] = useState<string>();
   const navigate = useNavigate();
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Form submitted:", formData);
-  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({
@@ -27,6 +27,53 @@ export default function Component() {
       [e.target.name]: e.target.value,
     }));
   };
+
+  const Register = useMutation({
+    mutationFn: async ({
+      fullName,
+      email,
+      dateOfBirth,
+      phoneNumber,
+      password,
+      confirmPassword,
+    }: {
+      fullName: string;
+      email: string;
+      dateOfBirth: string;
+      phoneNumber: string;
+      password: string;
+      confirmPassword: string;
+    }) =>
+      Signup({
+        fullName,
+        email,
+        dateOfBirth,
+        phoneNumber,
+        password,
+        confirmPassword,
+      }),
+    onSuccess: () => {
+      navigate("/login");
+    },
+    onError: (error: any) => {
+      // setError(error.message);
+      navigate("/login");
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match.");
+    } else {
+      Register.mutate(formData);
+    }
+    console.log("Form submitted:", formData);
+  };
+
+  if (Register.isPending) {
+    return <LoadingScreen message="Registering ..." />;
+  }
 
   return (
     <div className="fixed inset-0 flex items-center justify-center">
@@ -38,6 +85,12 @@ export default function Component() {
         <p className="text-gray-600 mb-6">
           Enter your details below to create your account and get started.
         </p>
+
+        {error && (
+          <Alert variant="destructive" className="mb-6">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">

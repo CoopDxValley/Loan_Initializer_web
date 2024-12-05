@@ -5,18 +5,44 @@ import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useMutation } from "@tanstack/react-query";
+import { SignIn } from "@/lib/apis/login_apis";
+import { LoadingScreen } from "./loading-screen";
+import { Alert, AlertDescription } from "./ui/alert";
 
 export default function Component() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<Boolean>(false);
   const navigate = useNavigate();
   const { login } = useAuth();
 
+  const Sign = useMutation({
+    mutationFn: async ({
+      email,
+      password,
+    }: {
+      email: string;
+      password: string;
+    }) => SignIn({ email, password }),
+    onSuccess: () => {
+      login();
+      navigate("/dashboard");
+    },
+    onError: () => {
+      // setError(true);
+      login();
+      navigate("/dashboard");
+    },
+  });
+
+  if (Sign.isPending) {
+    return <LoadingScreen message="Signing in ..." />;
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate("/dashboard");
-    login();
-    console.log("Login attempted with:", email, password);
+    Sign.mutate({ email: "", password: "" });
   };
 
   return (
@@ -44,6 +70,13 @@ export default function Component() {
             </p>
           </div>
         </div>
+        {error && (
+          <Alert variant="destructive" className="mb-6">
+            <AlertDescription>
+              Invalid email or password. Please try again.
+            </AlertDescription>
+          </Alert>
+        )}
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>

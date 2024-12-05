@@ -15,24 +15,19 @@ import { getPackages } from "@/lib/apis/package_apis";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { XCircle } from "lucide-react";
 import { useState } from "react";
-import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 export default function Packages() {
-  const { kyc } = useSelector((state: any) => state.user);
   const [term, setTerm] = useState("24");
   const [amount, setAmount] = useState("70000");
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const handleApplication = (title: string) => {
-    if (!!kyc) {
-      if (title === "1") {
-        navigate("/Souq");
-      }
-    } else {
-      navigate("/kyc1");
-    }
+    // if (title === "1") {
+    // navigate("/Souq");
+    navigate("/kyc");
+    // }
   };
 
   // const queryClient = useQueryClient();
