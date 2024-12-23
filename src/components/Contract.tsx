@@ -13,6 +13,9 @@ import {
 import { CheckCircle2, AlertCircle } from "lucide-react";
 import { useState } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { getKYCDetails } from "@/lib/apis/souqpass_apis";
+import { LoadingScreen } from "./loading-screen";
 
 export default function Component() {
   const [showResult, setShowResult] = useState<"success" | "failure" | null>(
@@ -21,9 +24,22 @@ export default function Component() {
   const [agreed, setAgreed] = useState(false);
   const navigate = useNavigate();
   const location: any = useLocation();
+  const { state } = useLocation() as {
+    state: { amount: number; interest: number; term: string };
+  };
 
-  if (!location?.state?.amount) {
+  if (!state) {
     return <Navigate to="/packages" replace />;
+  }
+  const { amount, interest, term } = state;
+
+  const kyc = useQuery({
+    queryKey: ["kyc"],
+    queryFn: async () => getKYCDetails(),
+  });
+
+  if (kyc.isLoading) {
+    return <LoadingScreen message="Preparing your Contract ..." />;
   }
 
   return (
@@ -45,8 +61,10 @@ export default function Component() {
 
             <p className="text-sm">
               This contract is made and entered into this 6 day of June the year
-              2024 between Mr/Ms Motuma Gishu whose address is in AA City/Town,
-              Contact motumagishu27@gmail.com ID / passport No. 54658784564
+              2024 between Mr/Ms {kyc.data?.name || "Motuma Gishu"} whose
+              address is in {kyc.data?.city || "AA"} City/Town, Contact
+              {kyc.data?.contact || "motumagishu27@gmail.com"} ID / passport No.
+              {kyc.data?.idPassportNumber || "54658784564"}
             </p>
 
             <p className="text-sm">and</p>
@@ -64,7 +82,7 @@ export default function Component() {
               <p className="text-sm">
                 1.1. The bank has agreed to grant a digital loan to the
                 borrower, and the latter has agreed to borrow a loan amount of
-                birr 100000.0
+                birr {amount}
               </p>
               <p className="text-sm">
                 1.2. The loan shall be disbursed to the borrower account
@@ -75,8 +93,8 @@ export default function Component() {
                 Article 2. Interest Rate
               </h3>
               <p className="text-sm">
-                The bank shall charge an interest rate of 7.0% per month on the
-                daily outstanding principal loan balance.
+                The bank shall charge an interest rate of {interest}% per month
+                on the daily outstanding principal loan balance.
               </p>
 
               <h3 className="text-base font-semibold">
@@ -84,7 +102,7 @@ export default function Component() {
               </h3>
               <p className="text-sm">
                 3.1. The loan with its interest and other costs shall be totally
-                repaid in 6 months.
+                repaid in {term} months.
               </p>
               <p className="text-sm">
                 3.2. The repayment schedule will be provided over the platform.
@@ -163,13 +181,11 @@ export default function Component() {
               <div className="space-y-4">
                 <div className="bg-muted p-4 rounded-lg">
                   <h4 className="font-semibold mb-2">Loan Details:</h4>
+                  <p className="text-sm">Amount: {amount} birr</p>
                   <p className="text-sm">
-                    Amount: {location?.state.amount} birr
+                    Interest Rate: {interest}% per month
                   </p>
-                  <p className="text-sm">
-                    Interest Rate: {location?.state.interest}% per month
-                  </p>
-                  <p className="text-sm">Term: {location?.state.term} months</p>
+                  <p className="text-sm">Term: {term} months</p>
                 </div>
                 <div className="space-y-2">
                   <h4 className="font-semibold">Next Steps:</h4>

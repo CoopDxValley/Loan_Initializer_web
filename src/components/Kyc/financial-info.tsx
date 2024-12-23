@@ -96,7 +96,7 @@ export function FinancialInfo() {
             name="passportPhotos"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Two Passport-Sized Photos</FormLabel>
+                <FormLabel>Passport-Sized Photo</FormLabel>
                 <FormControl>
                   <Input
                     type="file"
@@ -111,7 +111,7 @@ export function FinancialInfo() {
               </FormItem>
             )}
           />
-          <FormField
+          {/* <FormField
             control={control}
             name="signatureSpecimen"
             render={({ field }) => (
@@ -129,7 +129,7 @@ export function FinancialInfo() {
                 <FormMessage />
               </FormItem>
             )}
-          />
+          /> */}
         </div>
       </div>
     </div>

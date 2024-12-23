@@ -9,8 +9,6 @@ import Souq from "./pages/souqpass";
 import Contract from "./components/Contract";
 import MyLoans from "./pages/MyLoans";
 import Packages from "./pages/Packages";
-import KYC1 from "./components/KYC1";
-import KYC2 from "./components/KYC2";
 import Apply from "./pages/Apply";
 import Land from "./pages/Land";
 import LoanDetails from "./pages/loanDetail";

@@ -18,6 +18,14 @@ export interface Amount {
   totalRepayable: number; // Total amount to repay
 }
 
+type LoanContractDetails = {
+  name: string;
+  address: string;
+  city: string;
+  contact: string; // email or phone Number
+  idPassportNumber: string;
+};
+
 // apis.ts
 
 export const calculateLoanBracket = async (
@@ -51,6 +59,16 @@ export const calculateLoanPackage = async (
 
   if (!response.ok) {
     throw new Error("Failed to calculate loan packages");
+  }
+
+  return response.json();
+};
+
+export const getKYCDetails = async (): Promise<LoanContractDetails> => {
+  const response = await fetch(`/api/kyc-details`);
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch loan contract details");
   }
 
   return response.json();
