@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../AuthProvider";
+import { Button } from "./ui/button";
+import { Settings } from "lucide-react";
 
 const Header2 = () => {
   const navigate = useNavigate();
@@ -44,7 +46,16 @@ const Header2 = () => {
           >
             RM
           </span>
-          <span
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate("/settings")}
+            className="relative"
+            aria-label="Settings"
+          >
+            <Settings className="h-5 w-5" color="#000" />
+          </Button>
+          {/* <span
             onClick={() => {
               logout();
               navigate("/");
@@ -52,7 +63,7 @@ const Header2 = () => {
             className="text-[#D33D3B] font-medium cursor-pointer"
           >
             Sign out
-          </span>
+          </span> */}
         </div>
       </div>
     </div>

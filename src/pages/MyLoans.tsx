@@ -105,7 +105,7 @@ export default function MyLoans() {
   //   return <LoadingScreen message="Preparing your loans ..." />;
   // }
 
-  // if (myloans.isError || totalAmount.isError || totalPending.isLoading) {
+  // if (myloans.isError || totalAmount.isError || totalPending.isError) {
   //   return <StylizedServerError query={"myloans"} />;
   // }
 

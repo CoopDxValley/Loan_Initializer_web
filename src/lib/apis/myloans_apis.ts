@@ -10,7 +10,7 @@ export interface Loans {
 }
 
 // apis.ts
-export const getLoans = async () => {
+export const getLoans = async (): Promise<Loans[]> => {
   console.log("fetched");
   const response = await axios.get(`http://localhost:3000/api/loans`);
   if (response.status !== 200) {

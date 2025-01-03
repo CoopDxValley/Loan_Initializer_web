@@ -16,6 +16,9 @@ import RM from "./pages/RM";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import StylizedServerError from "./components/Error_Screen";
 import { KYCForm } from "./components/Kyc/kyc-info";
+import Settings from "./pages/Settings";
+import PersonalInformation from "./components/Setting/Personal_Info";
+import ChangePassword from "./components/Setting/Change_Password";
 
 function App() {
   const queryClient = new QueryClient();
@@ -127,6 +130,36 @@ function App() {
                 <PrivateRoute>
                   <Layout>
                     <LoanDetails />
+                  </Layout>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <PrivateRoute>
+                  <Layout>
+                    <Settings />
+                  </Layout>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/personal"
+              element={
+                <PrivateRoute>
+                  <Layout>
+                    <PersonalInformation />
+                  </Layout>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/password"
+              element={
+                <PrivateRoute>
+                  <Layout>
+                    <ChangePassword />
                   </Layout>
                 </PrivateRoute>
               }

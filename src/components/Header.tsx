@@ -2,6 +2,8 @@ import React from "react";
 import Tasks from "../assets/Tasks.svg?react";
 import { useAuth } from "../../AuthProvider";
 import { useNavigate } from "react-router-dom";
+import { Settings } from "lucide-react";
+import { Button } from "./ui/button";
 
 const Header = () => {
   const { isLoggedIn, logout } = useAuth();
@@ -26,6 +28,17 @@ const Header = () => {
           >
             <span className="text-[#000]  font-medium">Apply now</span>
           </div>
+          {isLoggedIn ? (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate("/settings")}
+              className="relative"
+              aria-label="Settings"
+            >
+              <Settings className="h-5 w-5" color="#000" />
+            </Button>
+          ) : null}
           {!isLoggedIn ? (
             <span
               onClick={() => navigate("/login")}
