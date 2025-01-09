@@ -39,21 +39,12 @@ const Header = () => {
               <Settings className="h-5 w-5" color="#000" />
             </Button>
           ) : null}
-          {!isLoggedIn ? (
+          {!isLoggedIn && (
             <span
               onClick={() => navigate("/login")}
-              className="text-[#00ADEF] font-medium cursor-pointer"
+              className="text-[#000] font-medium cursor-pointer"
             >
               Sign in
-            </span>
-          ) : (
-            <span
-              onClick={() => {
-                logout();
-              }}
-              className="text-[#D33D3B] font-medium cursor-pointer"
-            >
-              Sign out
             </span>
           )}
         </div>

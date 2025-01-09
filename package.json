@@ -37,6 +37,7 @@
     "date-fns": "^3.6.0",
     "dotenv": "^16.4.5",
     "formik": "^2.4.6",
+    "input-otp": "^1.4.2",
     "loan-initalization": "file:",
     "lucide-react": "^0.453.0",
     "react": "^18.3.1",

@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { format } from "date-fns";
-import { ArrowLeft, CalendarIcon } from "lucide-react";
+import { ArrowLeft, CalendarIcon, CheckCircle2, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
@@ -23,6 +23,13 @@ import {
 } from "@/components/ui/popover";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import { updatePersonalInformation } from "@/lib/apis/settings_apis";
+import { verifyOtp } from "@/lib/apis/otp_api";
+import { useState } from "react";
+import { LoadingScreen } from "../loading-screen";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "../ui/input-otp";
 
 const formSchema = z.object({
   fullName: z.string().min(2, {
@@ -49,9 +56,51 @@ export default function PersonalInformation() {
     },
   });
   const navigate = useNavigate();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [showOtp, setShowOtp] = useState(true);
+  const [error, setError] = useState("");
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  function onSubmit() {
+    // console.log(values);
+    setShowOtp(true);
+    setError("");
+    setModalVisible(true);
+  }
+
+  // Mutation for the API call
+  const updateInfo = useMutation({
+    mutationFn: (data: any) => updatePersonalInformation(data),
+
+    onSuccess: () => {
+      setSuccess(true);
+      setModalVisible(true);
+    },
+    onError: (error: Error) => {
+      setModalVisible(true);
+    },
+  });
+
+  const otpCall = useMutation({
+    mutationFn: (code: string) => verifyOtp({ otp: code }),
+    onSuccess: () => {
+      setShowOtp(false);
+      // handlePasswordChange();
+      updateInfo.mutate(form.getValues());
+    },
+    onError: (error: any) => {
+      setError(error.message);
+      setModalVisible(true);
+    },
+  });
+
+  const handleOtpCall = (code: string) => {
+    console.log(code);
+    otpCall.mutate(code);
+  };
+
+  if (updateInfo.isPending || otpCall.isPending) {
+    return <LoadingScreen message="Processing ..." />;
   }
 
   return (
@@ -171,6 +220,71 @@ export default function PersonalInformation() {
           </Form>
         </CardContent>
       </Card>
+      {showOtp ? (
+        <Dialog open={modalVisible} onOpenChange={setModalVisible}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Enter Verification Code</DialogTitle>
+            </DialogHeader>
+            <div className="flex flex-col items-center space-y-4">
+              <p className="text-sm text-muted-foreground text-center">
+                Please enter the verification code sent to your phone
+              </p>
+              <InputOTP
+                maxLength={6}
+                onComplete={handleOtpCall}
+                className="gap-2"
+              >
+                <InputOTPGroup>
+                  <InputOTPSlot index={0} />
+                  <InputOTPSlot index={1} />
+                  <InputOTPSlot index={2} />
+                  <InputOTPSlot index={3} />
+                  <InputOTPSlot index={4} />
+                  <InputOTPSlot index={5} />
+                </InputOTPGroup>
+              </InputOTP>
+              {error && (
+                <p className="text-sm text-red-500 text-center">{error}</p>
+              )}
+              <p className="text-sm text-muted-foreground">
+                Didn&apos;t receive a code?{" "}
+                <Button variant="link" className="p-0 h-auto">
+                  Resend
+                </Button>
+              </p>
+            </div>
+          </DialogContent>
+        </Dialog>
+      ) : (
+        <Dialog open={modalVisible} onOpenChange={setModalVisible}>
+          <DialogContent className="sm:max-w-md">
+            <div className="flex flex-col items-center gap-4 p-6 text-center">
+              {success ? (
+                <>
+                  <CheckCircle2 className="h-12 w-12 text-green-500" />
+                  <h2 className="text-xl font-semibold">Information Updated</h2>
+                  <p className="text-muted-foreground">
+                    Your personal information has been successfully updated.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <XCircle className="h-12 w-12 text-red-500" />
+                  <h2 className="text-xl font-semibold">Failed to Save</h2>
+                  <p className="text-muted-foreground">
+                    An error occurred while saving your information. Please try
+                    again.
+                  </p>
+                </>
+              )}
+              <Button onClick={() => setModalVisible(false)} className="mt-2">
+                {success ? "Close" : "Try Again"}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }

@@ -32,8 +32,21 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import useWebSocket from "@/hooks/webSocket";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function RM() {
+  const { oldMessage, sendNewMessage } = useWebSocket(
+    "wss://yourserver.com/chat"
+  );
   const [activeTab, setActiveTab] = useState("messages");
   const [feedback, setFeedback] = useState("");
   const [rate, setRate] = useState(0);
@@ -48,6 +61,7 @@ export default function RM() {
   const [meetingSuccess, setMeetingSuccess] = useState<boolean>(false);
   const [fundSuccess, setFundSuccess] = useState<boolean>(false);
   const [ratingSuccess, setRatingSuccess] = useState<boolean>(false);
+  const [message, setMessage] = useState("");
 
   const handleRating = (value: number) => {
     setRate(value);
@@ -110,6 +124,17 @@ export default function RM() {
       setRatingSuccess(false);
     },
   });
+
+  const handleSendMessage = () => {
+    if (message === "") return;
+    sendNewMessage("sendMessage", {
+      senderId: "user123",
+      receiverId: "johnDoe123",
+      message: message,
+      timestamp: new Date().toISOString(),
+    });
+    setMessage("");
+  };
 
   if (meeting.isPending) {
     return <LoadingScreen message="Setting your meeting ..." />;
@@ -225,16 +250,18 @@ export default function RM() {
                       </div>
                     </ScrollArea>
                     <div className="mt-4">
-                      <form className="flex space-x-2">
+                      <div className="flex items-center space-x-2">
                         <Input
                           className="flex-1"
                           placeholder="Type a message..."
+                          onChange={(event) => setMessage(event.target.value)}
+                          value={message}
                         />
-                        <Button type="submit">
+                        <Button onClick={() => handleSendMessage()}>
                           <Send className="h-4 w-4 mr-2" />
                           Send
                         </Button>
-                      </form>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -316,13 +343,29 @@ export default function RM() {
                         >
                           Source Bank
                         </label>
-                        <Input
+                        {/* <Input
                           id="sourceBank"
                           placeholder="Enter the name of the source bank"
                           onChange={(event) =>
                             setSourceBank(event.target.value)
                           }
-                        />
+                        /> */}
+                        <Select>
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select a Bank" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              {/* <SelectLabel>Select Bank</SelectLabel> */}
+                              <SelectItem value="awb">Awash Bank</SelectItem>
+                              <SelectItem value="Abb">
+                                Abyssinia Bank
+                              </SelectItem>
+                              <SelectItem value="Hb">Hibret Bank</SelectItem>
+                              <SelectItem value="wgb">Wegagen Bank</SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
                       </div>
                       <div className="space-y-2">
                         <label htmlFor="amount" className="text-sm font-medium">

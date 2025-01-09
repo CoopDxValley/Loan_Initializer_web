@@ -4,7 +4,7 @@ import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { ArrowLeft, Eye, EyeOff } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Eye, EyeOff, XCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,11 +18,17 @@ import {
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import { updatePassword } from "@/lib/apis/settings_apis";
+import { verifyOtp } from "@/lib/apis/otp_api";
+import { LoadingScreen } from "../loading-screen";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "../ui/input-otp";
 
 const formSchema = z
   .object({
     currentPassword: z.string().min(1, "Current password is required"),
-    newPassword: z.string().min(8, "Password must be at least 8 characters"),
+    newPassword: z.string().min(3, "Password must be at least 3 characters"),
     confirmPassword: z.string().min(1, "Please confirm your password"),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
@@ -34,6 +40,10 @@ export default function ChangePassword() {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [showOtp, setShowOtp] = useState(true);
+  const [isSuccess, setSuccess] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -46,12 +56,57 @@ export default function ChangePassword() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
-      // Here you would typically make an API call to update the password
-      console.log(values);
-    } catch (error) {
-      console.error("Error updating password:", error);
-    }
+    setShowOtp(true);
+    setError("");
+    setModalVisible(true);
+  }
+
+  // Mutation for the API call
+  const updatePasswordMutation = useMutation({
+    mutationFn: (data: { currentPassword: string; newPassword: string }) =>
+      updatePassword(data),
+
+    onSuccess: () => {
+      setSuccess(true);
+      setModalVisible(true);
+    },
+    onError: (error: Error) => {
+      setSuccess(false);
+      setModalVisible(true);
+    },
+  });
+
+  const otpCall = useMutation({
+    mutationFn: (code: string) => verifyOtp({ otp: code }),
+    onSuccess: () => {
+      setShowOtp(false);
+      handlePasswordChange(
+        form.getValues().currentPassword,
+        form.getValues().newPassword
+      );
+    },
+    onError: (error: any) => {
+      setError(error.message);
+      setModalVisible(true);
+    },
+  });
+
+  const handlePasswordChange = (
+    currentPassword: string = "current_password",
+    newPassword: string = "new_password"
+  ) => {
+    updatePasswordMutation.mutate({
+      currentPassword, // Replace with form input value
+      newPassword, // Replace with form input value
+    });
+  };
+
+  const handleOtpCall = (code: string) => {
+    otpCall.mutate(code);
+  };
+
+  if (updatePasswordMutation.isPending || otpCall.isPending) {
+    return <LoadingScreen message="Processing ..." />;
   }
 
   return (
@@ -182,6 +237,73 @@ export default function ChangePassword() {
           </Form>
         </CardContent>
       </Card>
+      {showOtp ? (
+        <Dialog open={isModalVisible} onOpenChange={setModalVisible}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Enter Verification Code</DialogTitle>
+            </DialogHeader>
+            <div className="flex flex-col items-center space-y-4">
+              <p className="text-sm text-muted-foreground text-center">
+                Please enter the verification code sent to your phone
+              </p>
+              <InputOTP
+                maxLength={6}
+                onComplete={handleOtpCall}
+                className="gap-2"
+              >
+                <InputOTPGroup>
+                  <InputOTPSlot index={0} />
+                  <InputOTPSlot index={1} />
+                  <InputOTPSlot index={2} />
+                  <InputOTPSlot index={3} />
+                  <InputOTPSlot index={4} />
+                  <InputOTPSlot index={5} />
+                </InputOTPGroup>
+              </InputOTP>
+              {error && (
+                <p className="text-sm text-red-500 text-center">{error}</p>
+              )}
+              <p className="text-sm text-muted-foreground">
+                Didn&apos;t receive a code?{" "}
+                <Button variant="link" className="p-0 h-auto">
+                  Resend
+                </Button>
+              </p>
+            </div>
+          </DialogContent>
+        </Dialog>
+      ) : (
+        <Dialog open={isModalVisible} onOpenChange={setModalVisible}>
+          <DialogContent className="sm:max-w-md">
+            <div className="flex flex-col items-center gap-4 p-6 text-center">
+              {isSuccess ? (
+                <>
+                  <CheckCircle2 className="h-12 w-12 text-green-500" />
+                  <h2 className="text-xl font-semibold">Password Updated</h2>
+                  <p className="text-muted-foreground">
+                    Your password has been successfully updated.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <XCircle className="h-12 w-12 text-red-500" />
+                  <h2 className="text-xl font-semibold">
+                    Failed to Update Password
+                  </h2>
+                  <p className="text-muted-foreground">
+                    An error occurred while updating your password. Please try
+                    again.
+                  </p>
+                </>
+              )}
+              <Button onClick={() => setModalVisible(false)} className="mt-2">
+                {isSuccess ? "Close" : "Try Again"}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }
