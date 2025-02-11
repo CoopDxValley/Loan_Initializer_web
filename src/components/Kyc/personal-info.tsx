@@ -64,7 +64,6 @@ export function PersonalInfo() {
                   <SelectContent>
                     <SelectItem value="male">Male</SelectItem>
                     <SelectItem value="female">Female</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -138,7 +137,7 @@ export function PersonalInfo() {
               </FormItem>
             )}
           />
-          <FormField
+          {/* <FormField
             control={control}
             name="phoneNumber"
             render={({ field }) => (
@@ -150,7 +149,7 @@ export function PersonalInfo() {
                 <FormMessage />
               </FormItem>
             )}
-          />
+          /> */}
           <FormField
             control={control}
             name="email"

@@ -1,6 +1,7 @@
 import { LoadingScreen } from "@/components/loading-screen";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -14,180 +15,144 @@ import { Label } from "@/components/ui/label";
 import { getPackages } from "@/lib/apis/package_apis";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { XCircle } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Packages() {
-  const [term, setTerm] = useState("24");
-  const [amount, setAmount] = useState("70000");
+  const [loanAmount, setLoanAmount] = useState("70000");
+  const [loanTerm, setLoanTerm] = useState("24");
+  const [selectedLoans, setSelectedLoans] = useState<string[]>([]);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  const handleApplication = (title: string) => {
-    // if (title === "1") {
-    // navigate("/Souq");
-    navigate("/kyc");
-    // }
+  // const loanOptions = [
+  //   {
+  //     id: "04a5dfcb-1418-4792-a84f-f3833ca9fefc",
+  //     name: "Business Loan",
+  //     type: "Business",
+  //     apr: 4.2,
+  //     max: 100000,
+  //   },
+  // ];
+
+  const handleLoanSelection = (loanId: string) => {
+    setSelectedLoans((prev: any) =>
+      prev.includes(loanId)
+        ? prev.filter((id: any) => id !== loanId)
+        : [...prev, loanId]
+    );
   };
 
-  // const queryClient = useQueryClient();
+  const handleSubmit = () => {
+    console.log("Applying for loans:", selectedLoans);
+    // Handle multiple loan applications here
+    navigate("/kyc");
+  };
 
-  // const packages = useQuery({
-  //   queryKey: ["packages"],
-  //   queryFn: async () => getPackages(amount, term),
-  // });
+  useEffect(() => {
+    filterPackages.mutate({});
+  }, []);
 
-  // const filterPackages = useMutation({
-  //   mutationFn: ({ amount, term }: { amount: string; term: string }) =>
-  //     getPackages(amount, term),
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries({ queryKey: ["packages"] });
-  //   },
-  //   onError: () => {
-  //     console.log("called");
-  //     setIsOpen(true);
-  //   },
-  // });
+  const filterPackages = useMutation({
+    mutationFn: ({ amount, term }: { amount?: string; term?: string }) =>
+      getPackages(amount, term),
+    onSuccess: () => {},
+    onError: (err) => {
+      console.log(err);
+    },
+  });
 
-  // if (packages.isLoading || filterPackages.isPending) {
-  //   return <LoadingScreen message="Preparing your packages ..." />;
-  // }
+  const handleUpdateResults = () => {
+    // Handle loan calculator update here
+    // console.log("Updating results with:", { loanAmount, loanTerm });
+    filterPackages.mutate({ amount: loanAmount, term: loanTerm });
+  };
+
+  if (filterPackages.isPending) {
+    return <LoadingScreen message="Preparing your packages ..." />;
+  }
 
   return (
-    <div className="w-full">
-      <div className="bg-[#09090b] text-white p-8 mb-8">
-        <div className="max-w-3xl mx-auto">
-          <h1 className="text-4xl font-bold mb-4">Find your perfect loan</h1>
-          <p className="text-xl">
-            Compare loans and see the lowest rate available to you
-          </p>
+    <div className="mx-auto p-6 space-y-6">
+      <div className="grid md:grid-cols-2 gap-6 items-end">
+        <div className="space-y-2">
+          <Label htmlFor="loan-amount">Loan amount</Label>
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2">$</span>
+            <Input
+              id="loan-amount"
+              type="number"
+              value={loanAmount}
+              onChange={(e) => setLoanAmount(e.target.value)}
+              className="pl-7"
+            />
+          </div>
         </div>
+        <div className="space-y-2">
+          <Label htmlFor="loan-term">Loan term</Label>
+          <div className="flex gap-4 items-center">
+            <Input
+              id="loan-term"
+              type="number"
+              value={loanTerm}
+              onChange={(e) => setLoanTerm(e.target.value)}
+            />
+            <span className="text-gray-600">months</span>
+          </div>
+        </div>
+        <Button
+          onClick={handleUpdateResults}
+          className="md:col-span-2 w-full md:w-auto md:ml-auto"
+        >
+          Update results
+        </Button>
       </div>
-      <div className=" w-full mx-auto px-4">
-        <Card className="mb-8">
-          <CardContent className="p-6">
-            <div className="grid gap-6 md:grid-cols-[1fr,1fr,auto] items-end">
-              <div>
-                <Label htmlFor="amount">Loan amount</Label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
-                    $
-                  </span>
-                  <Input
-                    className="pl-7"
-                    id="amount"
-                    defaultValue="70000"
-                    type="number"
-                    onChange={(event) => setAmount(event.target.value)}
-                  />
-                </div>
-              </div>
-              <div>
-                <Label htmlFor="term">Loan term</Label>
-                <div className="relative">
-                  <Input
-                    id="term"
-                    type="number"
-                    defaultValue="24"
-                    onChange={(event) => setTerm(event.target.value)}
-                    // style={{ zIndex: 10 }}
-                  />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">
-                    months
-                  </span>
-                </div>
-              </div>
-              <Button
-                onClick={() => {
-                  // filterPackages.mutate({ amount, term });
-                }}
-                className="bg-[#000] hover:bg-blue-700"
-              >
-                Update results
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
 
-        {[1, 2, 3, 4].map((index) => (
-          <Card key={index} className="mb-4">
-            <CardContent className="p-6">
-              <div className="grid gap-6 md:grid-cols-[auto,1fr,auto] items-center">
-                <div className="flex items-center relative">
-                  {/* <img
-                    src="/assets/myGuarantor.svg"
-                    alt="Guarantor MyLoan"
-                    width={120}
-                    height={80}
-                    className="object-contain"
-                  /> */}
-                  <div className="flex flex-col">
-                    <span className="font-medium">Souqpass Financing Loan</span>
-                    <span className="text-[#73738C]">RFB Loan</span>
-                  </div>
-                  {/* <div className="absolute -top-2 -right-2">
-                    <div className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full transform rotate-12">
-                      CASHBACK!
-                    </div>
-                  </div> */}
-                </div>
-                <div className="grid gap-4 md:grid-cols-4">
-                  <div>
-                    <div className="text-sm text-gray-500">
-                      Representative APR (fixed)
-                    </div>
-                    <div className="font-bold">9.9% APR</div>
-                  </div>
-                  <div>
-                    <div className="text-sm text-gray-500">
-                      Monthly repayment
-                    </div>
-                    <div className="font-bold">£183.62</div>
-                  </div>
-                  <div>
-                    <div className="text-sm text-gray-500">
-                      Total charge for credit
-                    </div>
-                    <div className="font-bold">£406.88</div>
-                  </div>
-                  <div>
-                    <div className="text-sm text-gray-500">
-                      Total amount repayable
-                    </div>
-                    <div className="font-bold">£4,406.88</div>
-                  </div>
-                </div>
-                <Button
-                  onClick={() => handleApplication(String(index))}
-                  className="bg-[#000] hover:bg-blue-700 min-w-[100px]"
-                >
-                  Apply
-                </Button>
+      <div className="space-y-4">
+        {filterPackages.data?.map((loan) => (
+          <div
+            key={loan.id}
+            className="flex flex-col md:flex-row items-start md:items-center justify-between p-4 border rounded-lg space-y-4 md:space-y-0"
+          >
+            <div className="flex items-center gap-4">
+              <Checkbox
+                id={`loan-${loan.id}`}
+                checked={selectedLoans.includes(loan.id)}
+                onCheckedChange={() => handleLoanSelection(loan.id)}
+              />
+              <div>
+                <h3 className="font-medium">{loan.name}</h3>
+                <p className="text-sm text-gray-600">Loan Name</p>
+                <p className="font-semibold">{loan.apr}</p>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8 text-sm w-full md:w-auto">
+              <div>
+                <p className="text-gray-600">Loan Category</p>
+                <p className="font-semibold">{loan.type}</p>
+              </div>
+              <div>
+                <p className="text-gray-600">Apr</p>
+                <p className="font-semibold">{loan.apr}%</p>
+              </div>
+              <div>
+                <p className="text-gray-600">Maximum Amount</p>
+                <p className="font-semibold">{loan.max}</p>
+              </div>
+            </div>
+          </div>
         ))}
       </div>
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-destructive">
-              <XCircle className="h-5 w-5" />
-              Invalid Search Parameters
-            </DialogTitle>
-            <DialogDescription>
-              Your loan search contains invalid parameters. Please review and
-              correct the following:
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <ul className="list-disc pl-5 space-y-2">
-              <li>Loan amount must be a positive number</li>
-              <li>Loan term must be at least 1 month</li>
-            </ul>
-          </div>
-        </DialogContent>
-      </Dialog>
+
+      <Button
+        onClick={handleSubmit}
+        disabled={selectedLoans.length === 0}
+        className="w-full md:w-auto"
+      >
+        Apply for {selectedLoans.length}{" "}
+        {selectedLoans.length === 1 ? "loan" : "loans"}
+      </Button>
     </div>
   );
 }

@@ -1,3 +1,5 @@
+import axios from "axios";
+
 // types.ts
 export interface Requirements {
   requirements: String[];
@@ -9,22 +11,21 @@ export interface Purpose {
 
 // api.ts
 export const getRequirements = async (): Promise<Requirements> => {
+  const response = await axios.get(
+    "http://localhost:4000/api/requirement/getRequirements"
+  );
+  const requirements = response.data;
   return {
-    requirements: [
-      "18+ years",
-      "A permanent resident or citizen of ET",
-      "Earning a stable income",
-    ],
+    requirements,
   };
 };
 
 export const getPurpose = async (): Promise<Purpose> => {
+  const response = await axios.get(
+    "http://localhost:4000/api/purpose/getPurposes"
+  );
+  const purpose = response.data;
   return {
-    purpose: [
-      { id: "grow", title: "Growing My Business" },
-      { id: "grow1", title: "Growing My Business" },
-      { id: "grow2", title: "Growing My Business" },
-      { id: "grow3", title: "Growing My Business" },
-    ],
+    purpose,
   };
 };

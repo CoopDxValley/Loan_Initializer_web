@@ -56,7 +56,7 @@ export function KYCForm() {
         description:
           "An error occurred while submitting your KYC information. Please try again later.",
       });
-      navigate("/Souq");
+      // navigate("/Souq");
     },
   });
 

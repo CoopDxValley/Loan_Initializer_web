@@ -5,9 +5,6 @@ export const kycFormSchema = z.object({
   gender: z.enum(["male", "female", "other"]),
   dateOfBirth: z.date(),
   maritalStatus: z.enum(["single", "married", "divorced", "widowed"]),
-  phoneNumber: z
-    .string()
-    .min(10, "Phone number must be at least 10 characters"),
   email: z.string().email("Invalid email address"),
   residentialAddress: z.object({
     street: z.string().min(1, "Street is required"),

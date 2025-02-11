@@ -4,7 +4,6 @@ export interface KycFormPayload {
   gender: "male" | "female";
   dateOfBirth: string; // Ensure it's formatted as YYYY-MM-DD
   maritalStatus: "single" | "married" | "divorced" | "widowed";
-  phoneNumber: string;
   email: string;
   residentialAddress: {
     street: string;
@@ -41,6 +40,8 @@ import { KYCFormData } from "../../../types/kyc-form";
 
 export const submitKycForm = async (payload: KYCFormData): Promise<void> => {
   const formData = new FormData();
+
+  console.log(payload);
 
   // Append primitive fields
   Object.entries(payload).forEach(([key, value]) => {
@@ -84,11 +85,15 @@ export const submitKycForm = async (payload: KYCFormData): Promise<void> => {
     });
   }
 
-  const response = await axios.post("http://localhost:3000/api/kyc", formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+  const response = await axios.post(
+    "http://localhost:4000/api/kyc/kyc-submit",
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
 
   if (response.status !== 200) {
     throw new Error("KYC form submission failed");

@@ -9,10 +9,12 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getPurpose, getRequirements } from "@/lib/apis/dashboard_apis";
 import { LoadingScreen } from "@/components/loading-screen";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export default function Apply() {
   const navigate = useNavigate();
   const [amount, setAmount] = useState<number>(2000);
+  const [purpose, setPurpose] = useState<string>("");
   const minAmount = 2000;
   const maxAmount = 70000;
 
@@ -31,17 +33,25 @@ export default function Apply() {
     else if (numericValue > maxAmount) setAmount(maxAmount);
   };
 
+  const togglePurpose = (id: string) => {
+    setPurpose((prev: any) =>
+      prev.includes(id)
+        ? prev.filter((item: any) => item !== id)
+        : [...prev, id]
+    );
+  };
+
   const requirements = useQuery({
     queryKey: ["requirements"],
     queryFn: getRequirements,
   });
 
-  const purpose = useQuery({
+  const purposes = useQuery({
     queryKey: ["purpose"],
     queryFn: getPurpose,
   });
 
-  if (requirements.isLoading || purpose.isLoading) {
+  if (requirements.isLoading || purposes.isLoading) {
     return <LoadingScreen message="Preparing your dashboard ..." />;
   }
 
@@ -66,7 +76,7 @@ export default function Apply() {
                   strokeLinejoin="round"
                 />
               </svg>
-              {req}
+              {req.description}
             </li>
           ))}
         </ul>
@@ -95,13 +105,18 @@ export default function Apply() {
       <div className="md:w-[80%] self-center space-y-4">
         <h2 className="text-xl font-bold">What will you use the money for?</h2>
         <RadioGroup defaultValue="business1" className="grid grid-cols-2 gap-4">
-          {purpose.data?.purpose?.map((purp, i) => (
+          {purposes.data?.purpose?.map((purp, i) => (
             <Label
               key={purp.id}
               className="border rounded-lg p-4 cursor-pointer [&:has(:checked)]:bg-muted"
             >
               <div className="flex items-center gap-2">
-                <RadioGroupItem value={`business${i + 1}`} className="mt-0" />
+                <Checkbox
+                  checked={purpose.includes(`business${i + 1}`)}
+                  value={`business${i + 1}`}
+                  className="mt-0"
+                  onCheckedChange={() => togglePurpose(`business${i + 1}`)}
+                />
                 <Store className="w-6 h-6 text-[#15151c]" />
                 <span>{purp.title}</span>
               </div>
