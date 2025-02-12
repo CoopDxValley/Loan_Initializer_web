@@ -20,9 +20,10 @@ export const SignIn = async (
   };
 
   const response = await axios.post(
-    `http://localhost:3000/api/auth/login`,
+    `http://localhost:4000/api/user/login`,
     data,
     {
+      withCredentials: true,
       headers: {
         "Content-Type": "application/json",
       },
@@ -33,4 +34,22 @@ export const SignIn = async (
     throw new Error("Failed to login");
   }
   return response.data;
+};
+
+// log out
+export const SignOut = async (): Promise<void> => {
+  const response = await axios.post(
+    `http://localhost:4000/api/user/logout`,
+    {},
+    {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  if (response.status !== 200) {
+    throw new Error("Failed to logout");
+  }
 };

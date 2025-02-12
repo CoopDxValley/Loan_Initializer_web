@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getPurpose, getRequirements } from "@/lib/apis/dashboard_apis";
 import { LoadingScreen } from "@/components/loading-screen";
 import { Checkbox } from "@/components/ui/checkbox";
+import StylizedServerError from "@/components/Error_Screen";
 
 export default function Apply() {
   const navigate = useNavigate();
@@ -53,6 +54,10 @@ export default function Apply() {
 
   if (requirements.isLoading || purposes.isLoading) {
     return <LoadingScreen message="Preparing your dashboard ..." />;
+  }
+
+  if (requirements.isError || purposes.isError) {
+    return <StylizedServerError query="requirements" />;
   }
 
   return (

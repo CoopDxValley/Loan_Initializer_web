@@ -20,22 +20,77 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useMutation } from "@tanstack/react-query";
-import { submitKycForm } from "@/lib/apis/kyc_apis";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getKYCDetails, submitKycForm } from "@/lib/apis/kyc_apis";
 import { LoadingScreen } from "../loading-screen";
 import { useNavigate } from "react-router-dom";
+import StylizedServerError from "../Error_Screen";
 
 export function KYCForm() {
   const [step, setStep] = useState(1);
   const { toast } = useToast();
   const navigate = useNavigate();
 
+  const kyc = useQuery({
+    queryKey: ["kyc"],
+    queryFn: async () => getKYCDetails(),
+  });
+
+  const oldKyc: any = {
+    fullName: kyc.data && kyc.data[0]?.fullName,
+    phoneNumber: kyc.data && kyc.data[0]?.phoneNumber,
+    email: kyc.data && kyc.data[0]?.email,
+    dateOfBirth: kyc.data && kyc.data[0]?.dateOfBirth,
+    residentialStreet: kyc.data && kyc.data[0]?.residentialStreet,
+    residentialCity: kyc.data && kyc.data[0]?.residentialCity,
+    residentialSubCity: kyc.data && kyc.data[0]?.residentialSubCity,
+    residentialWoreda: kyc.data && kyc.data[0]?.residentialWoreda,
+    mailingStreet: kyc.data && kyc.data[0]?.mailingStreet,
+    mailingCity: kyc.data && kyc.data[0]?.mailingCity,
+    mailingSubCity: kyc.data && kyc.data[0]?.mailingSubCity,
+    mailingWoreda: kyc.data && kyc.data[0]?.mailingWoreda,
+    maritalStatus: kyc.data && kyc.data[0]?.maritalStatus,
+    gender: kyc.data && kyc.data[0]?.gender,
+    idType: kyc.data && kyc.data[0]?.idType,
+    idNumber: kyc.data && kyc.data[0]?.idNumber,
+    issuingAuthority: kyc.data && kyc.data[0]?.issuingAuthority,
+    expiryDate: kyc.data && kyc.data[0]?.expiryDate,
+    occupation: kyc.data && kyc.data[0]?.occupation,
+    employerName: kyc.data && kyc.data[0]?.employerName,
+    employerAddress: kyc.data && kyc.data[0]?.employerAddress,
+    income: kyc.data && kyc.data[0]?.income,
+    incomeFrequency: kyc.data && kyc.data[0]?.incomeFrequency,
+    sourceOfIncome: kyc.data && kyc.data[0]?.sourceOfIncome,
+    tin: kyc.data && kyc.data[0]?.tin,
+    sameAsResidential: kyc.data && kyc.data[0]?.sameAsResidential,
+  };
+
+  console.log(oldKyc);
+
   const form = useForm<KYCFormData>({
-    // resolver: zodResolver(kycFormSchema),
-    defaultValues: {
-      residentialAddress: {},
-      mailingAddress: {},
-    },
+    resolver: zodResolver(kycFormSchema),
+    defaultValues: kyc.data
+      ? {
+          residentialAddress: {
+            street: oldKyc.residentialStreet,
+            city: oldKyc.residentialCity,
+            subCity: oldKyc.residentialSubCity,
+            woreda: oldKyc.residentialWoreda,
+          },
+          mailingAddress: {
+            street: oldKyc.mailingStreet,
+            city: oldKyc.mailingCity,
+            subCity: oldKyc.mailingSubCity,
+            woreda: oldKyc.mailingWoreda,
+          },
+          incomeFrequency: "monthly",
+          gender: "male",
+          maritalStatus: "single",
+          ...oldKyc,
+          income: parseFloat(oldKyc.income),
+          sameAsResidential: oldKyc.sameAsResidential === "true",
+        }
+      : {},
   });
 
   const totalSteps = 5;
@@ -65,8 +120,12 @@ export function KYCForm() {
     submitKyc.mutate(data);
   }
 
-  if (submitKyc.isPending) {
-    return <LoadingScreen message="Submitting kyc info ..." />;
+  if (submitKyc.isPending || kyc.isLoading) {
+    return <LoadingScreen message="kyc info ..." />;
+  }
+
+  if (submitKyc.isError || kyc.isError) {
+    return <StylizedServerError query="kyc" />;
   }
 
   return (

@@ -1,4 +1,4 @@
-import axios from "axios";
+import { axiosConfig as axios } from "../axios";
 
 // types.ts
 export interface Requirements {
@@ -11,9 +11,9 @@ export interface Purpose {
 
 // api.ts
 export const getRequirements = async (): Promise<Requirements> => {
-  const response = await axios.get(
-    "http://localhost:4000/api/requirement/getRequirements"
-  );
+  const response = await axios.get("/api/requirement/getRequirements", {
+    withCredentials: true,
+  });
   const requirements = response.data;
   return {
     requirements,
@@ -21,9 +21,9 @@ export const getRequirements = async (): Promise<Requirements> => {
 };
 
 export const getPurpose = async (): Promise<Purpose> => {
-  const response = await axios.get(
-    "http://localhost:4000/api/purpose/getPurposes"
-  );
+  const response = await axios.get("/api/purpose/getPurposes", {
+    withCredentials: true,
+  });
   const purpose = response.data;
   return {
     purpose,

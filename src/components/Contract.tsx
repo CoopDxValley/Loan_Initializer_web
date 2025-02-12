@@ -14,7 +14,6 @@ import { CheckCircle2, AlertCircle } from "lucide-react";
 import { useState } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { getKYCDetails } from "@/lib/apis/souqpass_apis";
 import { LoadingScreen } from "./loading-screen";
 
 export default function Component() {
@@ -35,7 +34,13 @@ export default function Component() {
 
   const kyc = useQuery({
     queryKey: ["kyc"],
-    queryFn: async () => getKYCDetails(),
+    queryFn: async () => {
+      const response = await fetch(`/api/kyc`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch KYC details");
+      }
+      return response.json();
+    },
   });
 
   if (kyc.isLoading) {

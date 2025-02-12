@@ -12,10 +12,24 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../AuthProvider";
+import { useMutation } from "@tanstack/react-query";
+import { SignOut } from "@/lib/apis/login_apis";
 
 export default function Settings() {
   const navigate = useNavigate();
   const { logout } = useAuth();
+
+  const logoutMutation = useMutation({
+    mutationFn: SignOut,
+    onSuccess: () => {
+      logout();
+      navigate("/");
+    },
+    onError: (error) => {
+      console.error("Logout failed:", error);
+    },
+  });
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-3xl mx-auto p-6 md:p-8 space-y-6">
@@ -139,7 +153,7 @@ export default function Settings() {
               className="w-full justify-start p-4 h-auto rounded-none text-red-600 hover:bg-red-50 hover:text-red-700"
               onClick={() => {
                 // Add logout logic here
-                logout();
+                logoutMutation.mutate();
                 navigate("/");
               }}
             >

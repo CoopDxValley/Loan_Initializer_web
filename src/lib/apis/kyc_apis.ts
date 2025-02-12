@@ -35,7 +35,8 @@ export interface KycFormPayload {
 }
 
 // apis.ts
-import axios from "axios";
+import { axiosConfig as axios } from "../axios";
+// import axios from "axios";
 import { KYCFormData } from "../../../types/kyc-form";
 
 export const submitKycForm = async (payload: KYCFormData): Promise<void> => {
@@ -85,17 +86,24 @@ export const submitKycForm = async (payload: KYCFormData): Promise<void> => {
     });
   }
 
-  const response = await axios.post(
-    "http://localhost:4000/api/kyc/kyc-submit",
-    formData,
-    {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    }
-  );
+  const response = await axios.post("/api/kyc/kyc-submit", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 
   if (response.status !== 200) {
     throw new Error("KYC form submission failed");
   }
+};
+
+export const getKYCDetails = async () => {
+  const response = await axios.get(`/api/kyc/kyc-details`, {
+    withCredentials: true,
+  });
+
+  if (response.status !== 200) {
+    throw new Error("Failed to fetch loan contract details");
+  }
+  return response.data;
 };

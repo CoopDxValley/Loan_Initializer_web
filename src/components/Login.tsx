@@ -9,10 +9,11 @@ import { useMutation } from "@tanstack/react-query";
 import { SignIn } from "@/lib/apis/login_apis";
 import { LoadingScreen } from "./loading-screen";
 import { Alert, AlertDescription } from "./ui/alert";
+import { updateAuthorizationHeader } from "@/lib/axios_interceptors";
 
 export default function Component() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("presentmoment20@gmail.com");
+  const [password, setPassword] = useState("123456");
   const [error, setError] = useState<Boolean>(false);
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -25,14 +26,13 @@ export default function Component() {
       email: string;
       password: string;
     }) => SignIn({ email, password }),
-    onSuccess: () => {
+    onSuccess: (data) => {
+      // updateAuthorizationHeader(data.token);
       login();
       navigate("/dashboard");
     },
     onError: () => {
       // setError(true);
-      login();
-      navigate("/dashboard");
     },
   });
 
@@ -42,7 +42,7 @@ export default function Component() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    Sign.mutate({ email: "", password: "" });
+    Sign.mutate({ email, password });
   };
 
   return (

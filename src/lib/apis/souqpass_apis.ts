@@ -63,13 +63,3 @@ export const calculateLoanPackage = async (
 
   return response.json();
 };
-
-export const getKYCDetails = async (): Promise<LoanContractDetails> => {
-  const response = await fetch(`/api/kyc-details`);
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch loan contract details");
-  }
-
-  return response.json();
-};
