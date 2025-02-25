@@ -1,20 +1,11 @@
 import { LoadingScreen } from "@/components/loading-screen";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { getKYCDetails } from "@/lib/apis/kyc_apis";
 import { getPackages } from "@/lib/apis/package_apis";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { XCircle } from "lucide-react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -25,28 +16,12 @@ export default function Packages() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  // const loanOptions = [
-  //   {
-  //     id: "04a5dfcb-1418-4792-a84f-f3833ca9fefc",
-  //     name: "Business Loan",
-  //     type: "Business",
-  //     apr: 4.2,
-  //     max: 100000,
-  //   },
-  // ];
-
   const handleLoanSelection = (loanId: string) => {
     setSelectedLoans((prev: any) =>
       prev.includes(loanId)
         ? prev.filter((id: any) => id !== loanId)
         : [...prev, loanId]
     );
-  };
-
-  const handleSubmit = () => {
-    console.log("Applying for loans:", selectedLoans);
-    // Handle multiple loan applications here
-    navigate("/kyc");
   };
 
   useEffect(() => {
@@ -62,13 +37,22 @@ export default function Packages() {
     },
   });
 
+  const kyc = useQuery({
+    queryKey: ["kyc"],
+    queryFn: async () => getKYCDetails(),
+  });
+
+  const handleSubmit = () => {
+    console.log("Applying for loans:", selectedLoans);
+    // Handle multiple loan applications here
+    navigate("/kyc", { state: { kycData: kyc.data[0] } });
+  };
+
   const handleUpdateResults = () => {
-    // Handle loan calculator update here
-    // console.log("Updating results with:", { loanAmount, loanTerm });
     filterPackages.mutate({ amount: loanAmount, term: loanTerm });
   };
 
-  if (filterPackages.isPending) {
+  if (filterPackages.isPending || kyc.isLoading) {
     return <LoadingScreen message="Preparing your packages ..." />;
   }
 

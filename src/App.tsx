@@ -42,26 +42,6 @@ function App() {
                 </PrivateRoute>
               }
             />
-            {/* <Route
-              path="/kyc1"
-              element={
-                <PrivateRoute>
-                  <Layout>
-                    <KYC1 />
-                  </Layout>
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/kyc2"
-              element={
-                <PrivateRoute>
-                  <Layout>
-                    <KYC2 />
-                  </Layout>
-                </PrivateRoute>
-              }
-            /> */}
             <Route
               path="/kyc"
               element={

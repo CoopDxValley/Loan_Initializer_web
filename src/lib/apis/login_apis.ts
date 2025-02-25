@@ -42,7 +42,6 @@ export const SignOut = async (): Promise<void> => {
     `http://localhost:4000/api/user/logout`,
     {},
     {
-      withCredentials: true,
       headers: {
         "Content-Type": "application/json",
       },

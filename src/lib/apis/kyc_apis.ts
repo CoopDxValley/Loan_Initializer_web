@@ -42,11 +42,18 @@ import { KYCFormData } from "../../../types/kyc-form";
 export const submitKycForm = async (payload: KYCFormData): Promise<void> => {
   const formData = new FormData();
 
-  console.log(payload);
+  // console.log(payload);
 
   // Append primitive fields
   Object.entries(payload).forEach(([key, value]) => {
-    if (
+    if (key === "dateOfBirth" || key === "expiryDate") {
+      console.log("reached here");
+      console.log(value);
+      formData.append(
+        key,
+        new Date(value as string).toISOString().split("T")[0]
+      );
+    } else if (
       typeof value !== "object" ||
       value instanceof FileList ||
       Array.isArray(value)
@@ -86,13 +93,16 @@ export const submitKycForm = async (payload: KYCFormData): Promise<void> => {
     });
   }
 
+  console.log(formData);
+
   const response = await axios.post("/api/kyc/kyc-submit", formData, {
+    withCredentials: true,
     headers: {
       "Content-Type": "multipart/form-data",
     },
   });
 
-  if (response.status !== 200) {
+  if (response.status !== 201) {
     throw new Error("KYC form submission failed");
   }
 };

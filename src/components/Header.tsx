@@ -32,7 +32,14 @@ const Header = () => {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => navigate("/settings")}
+              onClick={() => {
+                console.log("window.location.pathname");
+                navigate(
+                  window.location.pathname === "/settings"
+                    ? "/dashboard"
+                    : "/settings"
+                );
+              }}
               className="relative"
               aria-label="Settings"
             >

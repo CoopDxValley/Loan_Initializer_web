@@ -23,74 +23,68 @@ import {
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getKYCDetails, submitKycForm } from "@/lib/apis/kyc_apis";
 import { LoadingScreen } from "../loading-screen";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import StylizedServerError from "../Error_Screen";
 
 export function KYCForm() {
   const [step, setStep] = useState(1);
   const { toast } = useToast();
   const navigate = useNavigate();
-
-  const kyc = useQuery({
-    queryKey: ["kyc"],
-    queryFn: async () => getKYCDetails(),
-  });
+  const kycData = useLocation().state?.kycData;
 
   const oldKyc: any = {
-    fullName: kyc.data && kyc.data[0]?.fullName,
-    phoneNumber: kyc.data && kyc.data[0]?.phoneNumber,
-    email: kyc.data && kyc.data[0]?.email,
-    dateOfBirth: kyc.data && kyc.data[0]?.dateOfBirth,
-    residentialStreet: kyc.data && kyc.data[0]?.residentialStreet,
-    residentialCity: kyc.data && kyc.data[0]?.residentialCity,
-    residentialSubCity: kyc.data && kyc.data[0]?.residentialSubCity,
-    residentialWoreda: kyc.data && kyc.data[0]?.residentialWoreda,
-    mailingStreet: kyc.data && kyc.data[0]?.mailingStreet,
-    mailingCity: kyc.data && kyc.data[0]?.mailingCity,
-    mailingSubCity: kyc.data && kyc.data[0]?.mailingSubCity,
-    mailingWoreda: kyc.data && kyc.data[0]?.mailingWoreda,
-    maritalStatus: kyc.data && kyc.data[0]?.maritalStatus,
-    gender: kyc.data && kyc.data[0]?.gender,
-    idType: kyc.data && kyc.data[0]?.idType,
-    idNumber: kyc.data && kyc.data[0]?.idNumber,
-    issuingAuthority: kyc.data && kyc.data[0]?.issuingAuthority,
-    expiryDate: kyc.data && kyc.data[0]?.expiryDate,
-    occupation: kyc.data && kyc.data[0]?.occupation,
-    employerName: kyc.data && kyc.data[0]?.employerName,
-    employerAddress: kyc.data && kyc.data[0]?.employerAddress,
-    income: kyc.data && kyc.data[0]?.income,
-    incomeFrequency: kyc.data && kyc.data[0]?.incomeFrequency,
-    sourceOfIncome: kyc.data && kyc.data[0]?.sourceOfIncome,
-    tin: kyc.data && kyc.data[0]?.tin,
-    sameAsResidential: kyc.data && kyc.data[0]?.sameAsResidential,
+    fullName: kycData.fullName,
+    phoneNumber: kycData.phoneNumber,
+    email: kycData.email,
+    dateOfBirth: kycData.dateOfBirth,
+    residentialStreet: kycData.residentialStreet,
+    residentialCity: kycData.residentialCity,
+    residentialSubCity: kycData.residentialSubCity,
+    residentialWoreda: kycData.residentialWoreda,
+    mailingStreet: kycData.mailingStreet,
+    mailingCity: kycData.mailingCity,
+    mailingSubCity: kycData.mailingSubCity,
+    mailingWoreda: kycData.mailingWoreda,
+    maritalStatus: kycData.maritalStatus,
+    gender: kycData.gender,
+    idType: kycData.idType,
+    idNumber: kycData.idNumber,
+    issuingAuthority: kycData.issuingAuthority,
+    expiryDate: kycData.expiryDate,
+    occupation: kycData.occupation,
+    employerName: kycData.employerName,
+    employerAddress: kycData.employerAddress,
+    income: kycData.income,
+    incomeFrequency: kycData.incomeFrequency,
+    sourceOfIncome: kycData.sourceOfIncome,
+    tin: kycData.tin,
+    sameAsResidential: kycData.sameAsResidential,
   };
-
-  console.log(oldKyc);
 
   const form = useForm<KYCFormData>({
     resolver: zodResolver(kycFormSchema),
-    defaultValues: kyc.data
-      ? {
-          residentialAddress: {
-            street: oldKyc.residentialStreet,
-            city: oldKyc.residentialCity,
-            subCity: oldKyc.residentialSubCity,
-            woreda: oldKyc.residentialWoreda,
-          },
-          mailingAddress: {
-            street: oldKyc.mailingStreet,
-            city: oldKyc.mailingCity,
-            subCity: oldKyc.mailingSubCity,
-            woreda: oldKyc.mailingWoreda,
-          },
-          incomeFrequency: "monthly",
-          gender: "male",
-          maritalStatus: "single",
-          ...oldKyc,
-          income: parseFloat(oldKyc.income),
-          sameAsResidential: oldKyc.sameAsResidential === "true",
-        }
-      : {},
+    defaultValues: {
+      residentialAddress: {
+        street: oldKyc.residentialStreet,
+        city: oldKyc.residentialCity,
+        subCity: oldKyc.residentialSubCity,
+        woreda: oldKyc.residentialWoreda || "",
+      },
+      mailingAddress: {
+        street: oldKyc.mailingStreet || "",
+        city: oldKyc.mailingCity || "",
+        subCity: oldKyc.mailingSubCity || "",
+        woreda: oldKyc.mailingWoreda || "",
+      },
+      incomeFrequency: "monthly",
+      gender: "male",
+      maritalStatus: "single",
+      ...oldKyc,
+      dateOfBirth: new Date(oldKyc.dateOfBirth),
+      expiryDate: new Date(oldKyc.expiryDate),
+      income: parseFloat(oldKyc.income),
+      sameAsResidential: oldKyc.sameAsResidential === "true",
+    },
   });
 
   const totalSteps = 5;
@@ -120,11 +114,11 @@ export function KYCForm() {
     submitKyc.mutate(data);
   }
 
-  if (submitKyc.isPending || kyc.isLoading) {
+  if (submitKyc.isPending) {
     return <LoadingScreen message="kyc info ..." />;
   }
 
-  if (submitKyc.isError || kyc.isError) {
+  if (submitKyc.isError) {
     return <StylizedServerError query="kyc" />;
   }
 

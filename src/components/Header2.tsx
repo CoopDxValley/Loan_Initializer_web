@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../AuthProvider";
 import { Button } from "./ui/button";
 import { Settings } from "lucide-react";
+import React from "react";
 
 const Header2 = () => {
   const navigate = useNavigate();
@@ -49,7 +50,13 @@ const Header2 = () => {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => navigate("/settings")}
+            onClick={() => {
+              if (window.location.pathname === "/settings") {
+                navigate(-1);
+              } else {
+                navigate("/settings");
+              }
+            }}
             className="relative"
             aria-label="Settings"
           >
